@@ -20,4 +20,4 @@ https://zenn.dev/hackathons/2024-google-cloud-japan-ai-hackathon?tab=projects
 ・カロリー判定
 
 TODO
-・一人一個つくる
+・一人一個つくる (カロリー計算ぐらいまで)
