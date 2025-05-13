@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -18,6 +19,16 @@ class UploadTestPage extends StatelessWidget {
       print('✅ アップロード成功！');
     } catch (e) {
       print('❌ アップロード失敗: $e');
+    }
+
+    try {
+      await FirebaseFirestore.instance.collection('test').add({
+        'timestamp': DateTime.now().toIso8601String(),
+        'message': '通信確認テスト',
+      });
+      print('✅ Firestore に書き込み成功');
+    } catch (e) {
+      print('❌ Firestore 書き込み失敗: $e');
     }
   }
 

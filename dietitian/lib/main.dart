@@ -5,6 +5,7 @@ import 'text_upload.dart';
 import 'firebase_options.dart';
 
 void main() async {
+  print("main() start");
     WidgetsFlutterBinding.ensureInitialized();
     
     await Firebase.initializeApp(
@@ -12,6 +13,7 @@ void main() async {
     );
     
     //await Firebase.initializeApp();
+
     runApp(MyApp());
 }
 
