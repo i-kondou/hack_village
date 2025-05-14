@@ -1,3 +1,4 @@
+import 'package:dietitian/uploadimage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'camera_page.dart';
@@ -43,8 +44,9 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: CameraPage(),
+      //home: CameraPage(),
       //home: UploadTestPage(),
+      home: UploadImagePage(),
     );
   }
 }
