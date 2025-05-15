@@ -6,20 +6,20 @@
 	"configurations": [
 		{
 			"name": "dietitian",
-			"cwd": "g-kimura/dietitian",
+			"cwd": "dietitian",
 			"request": "launch",
 			"type": "dart"
 		},
 		{
 			"name": "dietitian (profile mode)",
-			"cwd": "g-kimura/dietitian",
+			"cwd": "dietitian",
 			"request": "launch",
 			"type": "dart",
 			"flutterMode": "profile"
 		},
 		{
 			"name": "dietitian (release mode)",
-			"cwd": "g-kimura/dietitian",
+			"cwd": "dietitian",
 			"request": "launch",
 			"type": "dart",
 			"flutterMode": "release"
