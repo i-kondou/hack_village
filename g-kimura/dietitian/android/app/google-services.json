@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "435782441404",
+    "project_id": "dietitian-a0650",
+    "storage_bucket": "dietitian-a0650.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:435782441404:android:fc37b432c055c113fe73b9",
+        "android_client_info": {
+          "package_name": "com.example.dietitian"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAL5LFX_EhgjCoTN_wMpGjRNU_9w_1I24"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
