@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dietitian/image_analyze.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -33,6 +34,7 @@ class _UploadImagePageState extends State<UploadImagePage> {
         });
 
         print("✅ アップロード完了: $downloadUrl");
+        analyzeImage(downloadUrl); // 画像分析関数を呼び出す
       } catch (e) {
         print("❌ アップロード失敗: $e");
       }
