@@ -6,6 +6,8 @@ import 'dart:typed_data';
 
 
 class UploadTestPage extends StatelessWidget {
+  const UploadTestPage({super.key});
+
   Future<void> uploadString() async {
     final storageRef = FirebaseStorage.instance.ref();
     final testFileRef = storageRef.child('test.txt');
