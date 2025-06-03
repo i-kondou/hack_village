@@ -1,1 +1,57 @@
-{"functions":[{"source":"functions","codebase":"default","ignore":["venv",".git","firebase-debug.log","firebase-debug.*.log","*.local"]}],"storage":{"rules":"storage.rules"},"flutter":{"platforms":{"android":{"default":{"projectId":"dietitian-a0650","appId":"1:435782441404:android:fc37b432c055c113fe73b9","fileOutput":"android/app/google-services.json"}},"ios":{"default":{"projectId":"dietitian-a0650","appId":"1:435782441404:ios:ead7ef72cca78d2dfe73b9","uploadDebugSymbols":false,"fileOutput":"ios/Runner/GoogleService-Info.plist"}},"macos":{"default":{"projectId":"dietitian-a0650","appId":"1:435782441404:ios:ead7ef72cca78d2dfe73b9","uploadDebugSymbols":false,"fileOutput":"macos/Runner/GoogleService-Info.plist"}},"dart":{"lib/firebase_options.dart":{"projectId":"dietitian-a0650","configurations":{"android":"1:435782441404:android:fc37b432c055c113fe73b9","ios":"1:435782441404:ios:ead7ef72cca78d2dfe73b9","macos":"1:435782441404:ios:ead7ef72cca78d2dfe73b9","web":"1:435782441404:web:f801876d0253af9dfe73b9","windows":"1:435782441404:web:d9df5f429c38199efe73b9"}}}}}}
+{
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    }
+  ],
+  "storage": {
+    "rules": "storage.rules"
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "dietitian-a0650",
+          "appId": "1:435782441404:android:fc37b432c055c113fe73b9",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "dietitian-a0650",
+          "appId": "1:435782441404:ios:ead7ef72cca78d2dfe73b9",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "macos": {
+        "default": {
+          "projectId": "dietitian-a0650",
+          "appId": "1:435782441404:ios:ead7ef72cca78d2dfe73b9",
+          "uploadDebugSymbols": false,
+          "fileOutput": "macos/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "dietitian-a0650",
+          "configurations": {
+            "android": "1:435782441404:android:fc37b432c055c113fe73b9",
+            "ios": "1:435782441404:ios:ead7ef72cca78d2dfe73b9",
+            "macos": "1:435782441404:ios:ead7ef72cca78d2dfe73b9",
+            "web": "1:435782441404:web:f801876d0253af9dfe73b9",
+            "windows": "1:435782441404:web:d9df5f429c38199efe73b9"
+          }
+        }
+      }
+    }
+  }
+}

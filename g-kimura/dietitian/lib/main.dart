@@ -2,7 +2,6 @@ import 'package:dietitian/uploadimage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'camera_page.dart';
-import 'text_upload.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -12,8 +11,6 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    
-    //await Firebase.initializeApp();
 
     runApp(MyApp());
 }
@@ -44,8 +41,6 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      //home: CameraPage(),
-      //home: UploadTestPage(),
       home: UploadImagePage(),
     );
   }

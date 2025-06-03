@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dietitian/image_analyze.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -13,46 +14,68 @@ class _UploadImagePageState extends State<UploadImagePage> {
   File? _image;
   String? _uploadedImageUrl;
 
-  Future<void> _pickAndUploadImage() async {
-    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.camera); // または gallery
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(source: source);
+      if (pickedFile == null) return;
 
-    if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
       });
 
-      final storageRef = FirebaseStorage.instance.ref();
-      final imageRef = storageRef.child("images/${DateTime.now().millisecondsSinceEpoch}.jpg");
+      await _uploadImageToFirebase();
+    } catch (e) {
+      print("❌ 画像選択エラー: $e");
+    }
+  }
 
-      try {
-        await imageRef.putFile(_image!);
-        final downloadUrl = await imageRef.getDownloadURL();
+  Future<void> _uploadImageToFirebase() async {
+    final storageRef = FirebaseStorage.instance.ref();
+    final imageRef = storageRef.child("images/${DateTime.now().millisecondsSinceEpoch}.jpg");
 
-        setState(() {
-          _uploadedImageUrl = downloadUrl;
-        });
+    try {
+      await imageRef.putFile(_image!);
+      final downloadUrl = await imageRef.getDownloadURL();
 
-        print("✅ アップロード完了: $downloadUrl");
-      } catch (e) {
-        print("❌ アップロード失敗: $e");
-      }
+      setState(() {
+        _uploadedImageUrl = downloadUrl;
+      });
+
+      print("✅ アップロード完了: $downloadUrl");
+
+      await analyzeImage(downloadUrl);
+    } catch (e) {
+      print("❌ アップロード失敗: $e");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("画像をアップロード")),
-      body: Center(
+      appBar: AppBar(title: Text("画像アップロード")),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _image != null ? Image.file(_image!, height: 200) : Text("画像なし"),
+            _image != null ? Image.file(_image!, height: 200) : Text("画像が選択されていません"),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _pickAndUploadImage,
-              child: Text("画像を撮影してアップロード"),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () => _pickImage(ImageSource.camera),
+                  icon: Icon(Icons.camera_alt),
+                  label: Text("カメラ"),
+                ),
+                ElevatedButton.icon(
+                  onPressed: () => _pickImage(ImageSource.gallery),
+                  icon: Icon(Icons.photo),
+                  label: Text("アルバム"),
+                ),
+              ],
             ),
+            SizedBox(height: 20),
             if (_uploadedImageUrl != null)
               SelectableText("アップロード先URL:\n$_uploadedImageUrl"),
           ],
