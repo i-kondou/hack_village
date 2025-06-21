@@ -8,15 +8,18 @@ class MyInformationPage extends StatefulWidget {
 }
 
 class _MyInformationPageState extends State<MyInformationPage> {
-  List<String> keys = ['名前', '身長 (cm)', '体重 (kg)'];
+  List<String> keys = ['名前', '年齢', '性別', '身長 (cm)', '体重 (kg)'];
   Map<String, TextEditingController> _controllers = {};
+  String _selectedGender = '未選択';
 
   @override
   void initState() {
     super.initState();
     // 各キーに対応するコントローラーを初期化
     for (var key in keys) {
-      _controllers[key] = TextEditingController();
+      if (key != '性別') {
+        _controllers[key] = TextEditingController();
+      }
     }
     _load();
   }
@@ -33,10 +36,14 @@ class _MyInformationPageState extends State<MyInformationPage> {
   // データの保存処理
   void _save() async {
     final prefs = await SharedPreferences.getInstance();
-    List<Map<String, String>> data = [
-      {for (var key in keys) key: _controllers[key]!.text},
-    ];
-    await prefs.setString('data', jsonEncode(data));
+    Map<String, String> data = {
+      for (var key in keys)
+        if (key == '性別')
+          key: _selectedGender
+        else
+          key: _controllers[key]!.text
+    };
+    await prefs.setString('data', jsonEncode([data]));
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text('保存しました')));
@@ -51,7 +58,9 @@ class _MyInformationPageState extends State<MyInformationPage> {
       if (loaded.isNotEmpty && loaded[0] is Map<String, dynamic>) {
         Map<String, dynamic> userData = Map<String, dynamic>.from(loaded[0]);
         userData.forEach((key, value) {
-          if (_controllers.containsKey(key)) {
+          if (key == '性別') {
+            _selectedGender = value;
+          } else if (_controllers.containsKey(key)) {
             _controllers[key]!.text = value.toString();
           }
         });
@@ -62,17 +71,39 @@ class _MyInformationPageState extends State<MyInformationPage> {
 
   // 各要素を表示するウィジェット
   Widget _buildElement(String label) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
-      child: TextField(
-        controller: _controllers[label],
-        decoration: InputDecoration(labelText: label),
-        keyboardType:
-            label.contains('cm') || label.contains('kg')
-                ? TextInputType.number
-                : TextInputType.text,
-      ),
-    );
+    if (label == '性別') {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
+        child: DropdownButtonFormField<String>(
+          value: _selectedGender == '' ? '未選択' : _selectedGender,
+          decoration: InputDecoration(labelText: '性別'),
+          items: ['未選択', '男性', '女性', 'その他']
+              .map((gender) => DropdownMenuItem(
+                    value: gender,
+                    child: Text(gender),
+                  ))
+              .toList(),
+          onChanged: (value) {
+            if (value != null) {
+              setState(() {
+                _selectedGender = value;
+              });
+            }
+          },
+        ),
+      );
+    } else {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
+        child: TextField(
+          controller: _controllers[label],
+          decoration: InputDecoration(labelText: label),
+          keyboardType: ['年齢', '身長 (cm)', '体重 (kg)'].contains(label)
+              ? TextInputType.number
+              : TextInputType.text,
+        ),
+      );
+    }
   }
 
   @override
