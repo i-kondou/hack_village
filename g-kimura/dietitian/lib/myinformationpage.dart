@@ -21,6 +21,7 @@ class _MyInformationPageState extends State<MyInformationPage> {
     _load();
   }
 
+  // 各コントローラーを破棄
   @override
   void dispose() {
     for (var controller in _controllers.values) {
@@ -29,6 +30,7 @@ class _MyInformationPageState extends State<MyInformationPage> {
     super.dispose();
   }
 
+  // データの保存処理
   void _save() async {
     final prefs = await SharedPreferences.getInstance();
     List<Map<String, String>> data = [
@@ -40,6 +42,7 @@ class _MyInformationPageState extends State<MyInformationPage> {
     ).showSnackBar(SnackBar(content: Text('保存しました')));
   }
 
+  // データの読み込み処理
   void _load() async {
     final prefs = await SharedPreferences.getInstance();
     final String? dataString = prefs.getString('data');
@@ -57,6 +60,7 @@ class _MyInformationPageState extends State<MyInformationPage> {
     }
   }
 
+  // 各要素を表示するウィジェット
   Widget _buildElement(String label) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
