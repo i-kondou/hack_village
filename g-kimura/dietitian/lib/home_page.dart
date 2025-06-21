@@ -1,7 +1,9 @@
+import 'dart:math';
 import 'package:dietitian/google_login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'recources/daily_messages.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -10,11 +12,29 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   User? _user;
+  String _dailyMessage = '';
 
   @override
   void initState() {
     super.initState();
     _user = FirebaseAuth.instance.currentUser;
+    _setDailyMessage(_user?.uid.hashCode);
+  }
+
+  void _setDailyMessage(int? seed) {
+    final now = DateTime.now();
+
+    // 特定日メッセージ（例：29日は「肉の日」）
+    if (now.day == 29) {
+      _dailyMessage = daily_message_for_29th;
+    } else if (now.month == 3 && now.day == 7) {
+      _dailyMessage = daily_message_for_Mar_7th;
+    } else {
+      // 日にちをシードにして固定のランダムメッセージを出す
+      final randomEngine= Random((seed ?? 1) * now.day);
+      final index=randomEngine.nextInt(daily_messages.length);
+      _dailyMessage = daily_messages[index];
+    }
   }
 
   @override
@@ -31,6 +51,12 @@ class _HomePageState extends State<HomePage> {
             Text(
               displayName != null ? 'こんにちは、$displayName さん' : 'ユーザーID: $uid',
               style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 10),
+            Text(
+              _dailyMessage,
+              style: TextStyle(fontSize: 16, color: Colors.green[700]),
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: 40),
             ElevatedButton(
