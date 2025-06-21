@@ -21,6 +21,7 @@ exports.analyzeImage = functions.https.onRequest(async (req, res) => {
     }));
 
     res.json({ labels });
+    console.log("index.js: Image analyzed successfully", labels);
   } catch (error) {
     console.error(error);
     res.status(500).send("Error analyzing image");
