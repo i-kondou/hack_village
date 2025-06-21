@@ -1,11 +1,11 @@
 import 'package:dietitian/google_login_page.dart';
-import 'package:dietitian/uploadimage.dart';
+import 'package:dietitian/upload_image_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
-import 'homepage.dart';
-import 'myinformationpage.dart';
+import 'home_page.dart';
+import 'my_information_page.dart';
 
 void main() async {
   print("main() start");
