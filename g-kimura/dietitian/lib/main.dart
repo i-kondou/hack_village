@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'firebase_options.dart';
 import 'homepage.dart';
 import 'myinformationpage.dart';
-import 'signindemo.dart';
 
 void main() async {
   print("main() start");
