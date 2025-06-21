@@ -8,7 +8,7 @@ class MyInformationPage extends StatefulWidget {
 }
 
 class _MyInformationPageState extends State<MyInformationPage> {
-  List<String> keys = ['名前', '身長 (cm)', '体重 (kg)'];
+  List<String> keys = ['名前', '年齢', '性別', '身長 (cm)', '体重 (kg)'];
   Map<String, TextEditingController> _controllers = {};
 
   @override
@@ -68,7 +68,7 @@ class _MyInformationPageState extends State<MyInformationPage> {
         controller: _controllers[label],
         decoration: InputDecoration(labelText: label),
         keyboardType:
-            label.contains('cm') || label.contains('kg')
+            ['年齢', '身長 (cm)', '体重 (kg)'].contains(label)
                 ? TextInputType.number
                 : TextInputType.text,
       ),
