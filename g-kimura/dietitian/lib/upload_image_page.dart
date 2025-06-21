@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -150,16 +151,53 @@ class _UploadImagePageState extends State<UploadImagePage> {
       return Text("画像がアップロードされていません");
     } else if (analysisResult != null) {
       return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text("分析結果:"),
-          ...analysisResult!.entries.map((entry) {
-            return Text("${entry.key}: ${entry.value}");
-          }).toList(),
+          // data から取り出して表示
+          _buildMenuName("menu"),
+          SizedBox(height: 10),
+          _buildAnalysisResult("calorie", "カロリー"),
+          _buildAnalysisResult("protein", "タンパク質"),
+          _buildAnalysisResult("fat", "脂質"),
+          _buildAnalysisResult("carbohydrate", "炭水化物"),
+          _buildAnalysisResult("dietary_fiber", "食物繊維"),
+          _buildAnalysisResult("vitamin", "ビタミン"),
+          _buildAnalysisResult("mineral", "ミネラル"),
+          _buildAnalysisResult("sodium", "ナトリウム"),
         ],
       );
     } else {
       return Text("よくわからない状況です。");
     }
+  }
+
+  // メニュー名は別
+  Widget _buildMenuName(String key) {
+    return Text(
+      "${analysisResult![key]}",
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 18,
+        color: Theme.of(context).primaryColor,
+      ),
+    );
+  }
+
+  // 要素ごとの表示
+  Widget _buildAnalysisResult(String key, String name) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Padding(padding: const EdgeInsets.only(left: 40.0), child: Text(name)),
+        Spacer(),
+        Padding(
+          padding: const EdgeInsets.only(right: 40.0),
+          child:
+              (analysisResult != null && analysisResult!.containsKey(key))
+                  ? Text("${analysisResult![key]}")
+                  : Text("データがありません"),
+        ),
+      ],
+    );
   }
 }
