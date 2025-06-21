@@ -60,11 +60,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyB6ouVx5eW2MiiJOcbcRz3xIJ9ZCDw2QCM',
-    appId: '1:435782441404:ios:ead7ef72cca78d2dfe73b9',
+    appId: '1:435782441404:ios:d0958edbbe8f4894fe73b9',
     messagingSenderId: '435782441404',
     projectId: 'dietitian-a0650',
     storageBucket: 'dietitian-a0650.firebasestorage.app',
-    iosBundleId: 'com.example.dietitian',
+    iosClientId: '435782441404-km9nsj7bgv9aak7sil2k78640jers2cb.apps.googleusercontent.com',
+    iosBundleId: 'com.examplegukos.dietitian',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -73,6 +74,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '435782441404',
     projectId: 'dietitian-a0650',
     storageBucket: 'dietitian-a0650.firebasestorage.app',
+    iosClientId: '435782441404-crleuv8flv5ni9nvmjjrs95boju3vbui.apps.googleusercontent.com',
     iosBundleId: 'com.example.dietitian',
   );
 
@@ -85,4 +87,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'dietitian-a0650.firebasestorage.app',
     measurementId: 'G-7T9GW6MYXS',
   );
+
 }
