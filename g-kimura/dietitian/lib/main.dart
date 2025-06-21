@@ -33,6 +33,8 @@ class MyApp extends StatelessWidget {
               ? HomePage()
               : GoogleLoginPage(),
       routes: {
+        '/homePage': (context) => HomePage(), // ホーム画面
+        '/googleLoginPage': (context) => GoogleLoginPage(), // Googleログイン画面
         '/uploadImagePage': (context) => UploadImagePage(), // 画像をアップロードする画面
         '/myInformationPage': (context) => MyInformationPage(), // マイ情報の画面
       },

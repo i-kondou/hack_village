@@ -51,6 +51,7 @@ class _HomePageState extends State<HomePage> {
               onPressed: () async {
                 await GoogleSignIn().signOut();
                 await FirebaseAuth.instance.signOut();
+                Navigator.pushNamed(context, '/googleLoginPage');
               },
               child: Text('ログアウト'),
             ),
