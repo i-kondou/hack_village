@@ -1,3 +1,4 @@
+import 'package:dietitian/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -33,10 +34,10 @@ class _GoogleLoginPageState extends State<GoogleLoginPage> {
         _user = userCredential.user;
       });
 
-      print("✅ ログイン成功: ${_user?.displayName}");
+      // 3. ログイン後はHomePageに移動する
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage()));
 
-      // 3. 画像アップロードページへ遷移
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => UploadImagePage()));
+      print("✅ ログイン成功: ${_user?.displayName}");
     } catch (e) {
       print("❌ ログインエラー: $e");
     }

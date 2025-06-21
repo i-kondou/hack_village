@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CLIENT_ID</key>
+	<string>435782441404-km9nsj7bgv9aak7sil2k78640jers2cb.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.435782441404-km9nsj7bgv9aak7sil2k78640jers2cb</string>
 	<key>API_KEY</key>
 	<string>AIzaSyB6ouVx5eW2MiiJOcbcRz3xIJ9ZCDw2QCM</string>
 	<key>GCM_SENDER_ID</key>
@@ -9,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.dietitian</string>
+	<string>com.examplegukos.dietitian</string>
 	<key>PROJECT_ID</key>
 	<string>dietitian-a0650</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:435782441404:ios:ead7ef72cca78d2dfe73b9</string>
+	<string>1:435782441404:ios:d0958edbbe8f4894fe73b9</string>
 </dict>
 </plist>
