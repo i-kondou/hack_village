@@ -23,17 +23,13 @@ class _HomePageState extends State<HomePage> {
     final uid = _user?.uid;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('ホーム'),
-      ),
+      appBar: AppBar(title: Text('ホーム')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              displayName != null
-                  ? 'こんにちは、$displayName さん'
-                  : 'ユーザーID: $uid',
+              displayName != null ? 'こんにちは、$displayName さん' : 'ユーザーID: $uid',
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(height: 40),
@@ -50,11 +46,14 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pushNamed(context, '/myInformationPage');
               },
             ),
-            SizedBox(height:40),
-            ElevatedButton(onPressed: () async {
-              await GoogleSignIn().signOut();
-              await FirebaseAuth.instance.signOut();
-            }, child: Text('ログアウト'))
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () async {
+                await GoogleSignIn().signOut();
+                await FirebaseAuth.instance.signOut();
+              },
+              child: Text('ログアウト'),
+            ),
           ],
         ),
       ),

@@ -1,11 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-// ====================================================
-// 画像分析
-// 　Cloud Functionsを使用して画像分析を行う関数
-// ====================================================
-
 Future<Map<String, dynamic>?> analyzeImage(String imageUrl) async {
   //final uri = Uri.parse('https://[your-region]-[your-project-id].cloudfunctions.net/analyzeImage');
   final uri = Uri.parse(
