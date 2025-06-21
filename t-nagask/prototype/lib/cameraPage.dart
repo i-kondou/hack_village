@@ -5,13 +5,13 @@
 
 import 'package:prototype/main.dart';
 import 'package:flutter/material.dart';
-import 'dart:io';
 
 // カメラ関連
 import 'package:camera/camera.dart';
 
 // Firebase 関連
 import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:io';
 
 class CameraPage extends StatefulWidget {
   const CameraPage({super.key, required this.title});
@@ -24,6 +24,7 @@ class CameraPage extends StatefulWidget {
 class _CameraPageState extends State<CameraPage> {
   CameraController? controller;
   Future<void>? initializeControllerFuture;
+  String? localImagePath;
 
   // ***************************************************
   // カメラを利用するためのメソッド呼び出しを追加
@@ -63,10 +64,12 @@ class _CameraPageState extends State<CameraPage> {
   Future<void> uploadImage(String imagePath) async {
     try {
       File file = File(imagePath);
+      debugPrint('imagePath: $imagePath');
       final fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      final storageRef = FirebaseStorage.instance.ref().child(
-        'images/$fileName',
-      );
+      // Firebase Storageの参照を取得
+      final imagesRef = FirebaseStorage.instance.ref().child("images");
+      // 画像をアップロード
+      final storageRef = imagesRef.child('$fileName');
       final uploadTask = await storageRef.putFile(file);
       final downloadUrl = await uploadTask.ref.getDownloadURL();
       debugPrint('画像アップロード完了: $downloadUrl');
@@ -81,6 +84,9 @@ class _CameraPageState extends State<CameraPage> {
     try {
       await initializeControllerFuture;
       final image = await controller!.takePicture();
+      setState(() {
+        localImagePath = image.path;
+      });
       debugPrint('撮影完了: ${image.path}');
       await uploadImage(image.path);
     } catch (e) {
@@ -97,23 +103,37 @@ class _CameraPageState extends State<CameraPage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body:
-          (initializeControllerFuture == null)
-              // カメラの初期化が完了していない場合はローディングインジケーターを表示
-              ? const Center(child: CircularProgressIndicator())
-              : FutureBuilder<void>(
-                future: initializeControllerFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done &&
-                      controller != null) {
-                    return CameraPreview(controller!);
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('カメラエラー: ${snapshot.error}'));
-                  } else {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                },
-              ),
+      body: Column(
+        children: [
+          Expanded(
+            child:
+                (initializeControllerFuture == null)
+                    ? const Center(child: CircularProgressIndicator())
+                    : FutureBuilder<void>(
+                      future: initializeControllerFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done &&
+                            controller != null) {
+                          return CameraPreview(controller!);
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text('カメラエラー: ${snapshot.error}'),
+                          );
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      },
+                    ),
+          ),
+          if (localImagePath != null)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.file(File(localImagePath!), height: 200),
+            ),
+        ],
+      ),
       // FloatingActionButtonを追加して、カメラで写真を撮影する
       floatingActionButton: FloatingActionButton(
         onPressed: shoot,

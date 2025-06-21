@@ -7,6 +7,7 @@ import 'package:camera/camera.dart';
 // Firebase 関連
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'firebase_options.dart';
 
 // カメラのリスト
 late List<CameraDescription> globalCameras;
@@ -18,8 +19,8 @@ Future<void> main() async {
   globalCameras = await availableCameras();
 
   //Firebase 初期化
-  await Firebase.initializeApp();
-  // await FirebaseAuth.instance.signInAnonymously();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseAuth.instance.signInAnonymously();
   runApp(const MyApp());
 }
 

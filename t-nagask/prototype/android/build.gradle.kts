@@ -21,12 +21,16 @@ tasks.register<Delete>("clean") {
 }
 
 // 自分で追記
-// buildscript {
-   // repositories {
-     //   google()
-       // mavenCentral()
-    //}
-    // dependencies {
-       // classpath("com.google.gms:google-services:4.4.1") // 最新版でOK
-    //}
-//}
+plugins {
+  // ...
+
+  // Add the dependency for the Google services Gradle plugin
+  id("com.google.gms.google-services") version "4.3.15" apply false
+
+}
+
+buildscript {
+    dependencies {
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.0")
+    }
+}
