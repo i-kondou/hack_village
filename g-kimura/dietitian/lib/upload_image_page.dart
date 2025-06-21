@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'package:dietitian/image_analyze.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'analyze_image.dart';
 
 class UploadImagePage extends StatefulWidget {
   @override
@@ -54,6 +54,7 @@ class _UploadImagePageState extends State<UploadImagePage> {
       setState(() {
         _isAnalyzing = true;
       });
+      await Future.delayed(Duration(seconds: 1));
       analysisResult = await analyzeImage(downloadUrl);
       setState(() {
         _isAnalyzing = false;
