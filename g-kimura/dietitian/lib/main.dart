@@ -42,7 +42,6 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      //home: HomePage(),
       //初回起動時(ログインしていない場合)はログイン画面を出す
       home: FirebaseAuth.instance.currentUser != null ? HomePage() : GoogleLoginPage(),
       routes: {
