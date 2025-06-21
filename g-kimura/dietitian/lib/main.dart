@@ -4,17 +4,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
+import 'homepage.dart';
+import 'myinformationpage.dart';
 import 'signindemo.dart';
 
 void main() async {
   print("main() start");
-    WidgetsFlutterBinding.ensureInitialized();
-    
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+  WidgetsFlutterBinding.ensureInitialized();
 
-    runApp(MyApp());
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -43,8 +43,11 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: FirebaseAuth.instance.currentUser != null ? UploadImagePage() : GoogleLoginPage(),
-      //home: SignInDemo(),
+      home: HomePage(),
+      routes: {
+        '/uploadImagePage': (context) => UploadImagePage(), // ← 画面1のルート設定
+        '/myInformationPage': (context) => MyInformationPage(), // ← マイ情報のルート設定
+      },
     );
   }
 }
