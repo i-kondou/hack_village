@@ -1,8 +1,10 @@
+import 'package:dietitian/google_login_page.dart';
 import 'package:dietitian/uploadimage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'camera_page.dart';
 import 'firebase_options.dart';
+import 'signindemo.dart';
 
 void main() async {
   print("main() start");
@@ -41,7 +43,8 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: UploadImagePage(),
+      home: FirebaseAuth.instance.currentUser != null ? UploadImagePage() : GoogleLoginPage(),
+      //home: SignInDemo(),
     );
   }
 }
