@@ -63,6 +63,7 @@ class GoogleLoginPageState extends State<GoogleLoginPage> {
         _user = userCredential.user;
       });
 
+<<<<<<< HEAD
       // 5. ページ移動
       // 　すでにユーザデータがある場合はホームページへ遷移
       // 　ない場合はマイ情報登録ページへ遷移
@@ -78,6 +79,17 @@ class GoogleLoginPageState extends State<GoogleLoginPage> {
           MaterialPageRoute(builder: (context) => MyInformationPage()),
         );
       }
+=======
+      // 3. ログイン後はHomePageに移動する
+      if (!mounted){
+        print("ページがマウントされていません");
+        return;
+      }
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
+>>>>>>> origin/main
 
       print("✅ ログイン成功: ${_user?.displayName}");
     } catch (e) {
