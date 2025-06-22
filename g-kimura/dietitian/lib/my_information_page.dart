@@ -141,8 +141,8 @@ class MyInformationPageState extends State<MyInformationPage> {
           print("ページがマウントされていません");
           return;
         }
-        Navigator.pop(context);
         if (widget.isFirstLogin) {
+          Navigator.pop(context);
           Navigator.pushReplacementNamed(context, '/homePage');
         }
       } else {
