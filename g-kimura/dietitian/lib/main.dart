@@ -1,4 +1,5 @@
 import 'package:dietitian/google_login_page.dart';
+import 'package:dietitian/mealRecordPage.dart';
 import 'package:dietitian/upload_image_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         '/googleLoginPage': (context) => GoogleLoginPage(), // Googleログイン画面
         '/uploadImagePage': (context) => UploadImagePage(), // 画像をアップロードする画面
         '/myInformationPage': (context) => MyInformationPage(), // マイ情報の画面
+        '/mealRecordPage': (context) => MealRecordPage(), // 食事記録の画面
       },
     );
   }
