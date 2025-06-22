@@ -85,7 +85,9 @@ class GoogleLoginPageState extends State<GoogleLoginPage> {
       } else {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => MyInformationPage()),
+          MaterialPageRoute(
+            builder: (context) => MyInformationPage(isFirstLogin: true),
+          ),
         );
       }
 

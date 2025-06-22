@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'storage_helper.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class MyInformationPage extends StatefulWidget {
-  const MyInformationPage({super.key});
+  final bool isFirstLogin;
+  const MyInformationPage({super.key, this.isFirstLogin = false});
 
   @override
   MyInformationPageState createState() => MyInformationPageState();
@@ -140,6 +142,9 @@ class MyInformationPageState extends State<MyInformationPage> {
           return;
         }
         Navigator.pop(context);
+        if (widget.isFirstLogin) {
+          Navigator.pushReplacementNamed(context, '/homePage');
+        }
       } else {
         print('❌ ユーザー情報登録に失敗しました: ${response.data}');
         _showMessage('保存に失敗しました。もう一度お試しください。');
@@ -187,7 +192,7 @@ class MyInformationPageState extends State<MyInformationPage> {
           controller: _controllers[label],
           decoration: InputDecoration(labelText: keys[label]),
           keyboardType:
-              ['age', 'height (cm)', 'weight (kg)'].contains(label)
+              ['age', 'height', 'weight'].contains(label)
                   ? TextInputType.number
                   : TextInputType.text,
         ),
@@ -195,19 +200,51 @@ class MyInformationPageState extends State<MyInformationPage> {
     }
   }
 
+  Widget _buildTextField(String text) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 18,
+        color: Theme.of(context).primaryColor,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('マイ情報')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            ...keys.keys.map(_buildElement),
-            SizedBox(height: 32),
-            ElevatedButton(onPressed: _save, child: Text('保存する')),
-          ],
-        ),
+      appBar: AppBar(
+        title: widget.isFirstLogin ? null : Text('マイ情報'),
+        automaticallyImplyLeading: widget.isFirstLogin == false,
+      ),
+      body: Column(
+        children: [
+          widget.isFirstLogin
+              ? Column(
+                children: [
+                  SizedBox(height: 30),
+                  _buildTextField('こんにちは、'),
+                  _buildTextField(
+                    FirebaseAuth.instance.currentUser != null
+                        ? '${FirebaseAuth.instance.currentUser!.displayName} さん'
+                        : 'ユーザーID: ${FirebaseAuth.instance.currentUser!.uid}',
+                  ),
+                  _buildTextField('あなたのことを教えてください！'),
+                ],
+              )
+              : SizedBox.shrink(), // 表示しない場合の代替ウィジェット
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                ...keys.keys.map(_buildElement),
+                SizedBox(height: 32),
+                ElevatedButton(onPressed: _save, child: Text('保存する')),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
