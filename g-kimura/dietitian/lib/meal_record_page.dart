@@ -9,13 +9,29 @@ class MealRecordPage extends StatefulWidget {
 }
 
 class MealRecordPageState extends State<MealRecordPage> {
-  late Future<Map<String, String>?> _mealDataFuture;
+  late Future<List<Map<String, String>>> _mealDataListFuture;
 
   @override
   void initState() {
     super.initState();
-    // キーは必要に応じて変更してください
-    _mealDataFuture = MealRecordPageState.loadData("analysis_result");
+    _mealDataListFuture = _loadMealDataList();
+  }
+
+  Future<List<Map<String, String>>> _loadMealDataList() async {
+    final value = await StorageHelper.loadString('meal_number', '0');
+    final mealNumber = int.parse(value ?? '0');
+    print("✅ 食事番号: $mealNumber");
+    List<Map<String, String>> mealDataList = [];
+    for (var i = 1; i < mealNumber; i++) {
+      final data = await StorageHelper.loadMap("analysis_result_$i");
+      if (data != null) {
+        print("✅ 食事 $i のデータ: $data");
+        mealDataList.add(data);
+      } else {
+        print("❌ 食事 $i のデータは見つかりません");
+      }
+    }
+    return mealDataList;
   }
 
   static Future<Map<String, String>?> loadData(String key) {
@@ -27,8 +43,8 @@ class MealRecordPageState extends State<MealRecordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('食事記録')),
-      body: FutureBuilder<Map<String, String>?>(
-        future: _mealDataFuture,
+      body: FutureBuilder<List<Map<String, String>>>(
+        future: _mealDataListFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -38,12 +54,15 @@ class MealRecordPageState extends State<MealRecordPage> {
             final data = snapshot.data!;
             return ListView(
               padding: const EdgeInsets.all(16.0),
-              children: data.entries.map((entry) {
-                return ListTile(
-                  title: Text(entry.key),
-                  subtitle: Text(entry.value),
-                );
-              }).toList(),
+              children:
+                  data
+                      .map(
+                        (entry) => ListTile(
+                          title: Text(entry.keys.join(', ')),
+                          subtitle: Text(entry.values.join(', ')),
+                        ),
+                      )
+                      .toList(),
             );
           } else {
             return const Center(child: Text('記録が見つかりません'));
