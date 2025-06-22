@@ -20,7 +20,7 @@ class MealRecordPageState extends State<MealRecordPage> {
 
   static Future<Map<String, String>?> loadData(String key) {
     // ここでstorage_helper.dart内のloadData関数を呼び出す
-    return StorageHelper.loadData(key);
+    return StorageHelper.loadMap(key);
   }
 
   @override

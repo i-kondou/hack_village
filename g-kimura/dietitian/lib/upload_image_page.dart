@@ -76,12 +76,10 @@ class UploadImagePageState extends State<UploadImagePage> {
       await Future.delayed(Duration(seconds: 1));
       _analysisResult = await analyzeImage(_imageUrl!);
       print("✅ 分析結果: $_analysisResult");
-      //分析結果をデバイスに保存
-      Map<String, String> analysisResultMap = {
-        for (var entry in _analysisResult!.entries)
-          entry.key: entry.value.toString(),
-      };
-      StorageHelper.saveData(analysisResultMap, 'analysis_result');
+      _analysisResult!.addEntries([
+        MapEntry("date", DateTime.now().toLocal().toString()),
+      ]);
+      StorageHelper.saveMap(_analysisResult!, 'analysis_result');
       setState(() {
         _uploadState = UploadState.analysisComplete;
       });

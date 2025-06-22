@@ -34,7 +34,7 @@ Future<Map<String, dynamic>?> analyzeImage(String imageUrl) async {
   Map<String, dynamic>? userData;
   String? accessToken;
   try {
-    userData = await StorageHelper.loadData('google_auth_data');
+    userData = await StorageHelper.loadMap('google_auth_data');
     if (userData == null) {
       print('エラー: ユーザーデータが存在しません');
       return null;

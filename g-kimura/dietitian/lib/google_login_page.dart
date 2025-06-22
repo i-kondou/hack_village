@@ -33,7 +33,7 @@ class GoogleLoginPageState extends State<GoogleLoginPage> {
         'accessToken': googleAuth.accessToken ?? '',
         'idToken': googleAuth.idToken ?? '',
       };
-      await StorageHelper.saveData(userData, 'google_auth_data');
+      await StorageHelper.saveMap(userData, 'google_auth_data');
 
       // 3. ユーザー登録APIにトークンを渡す
       bool isRegistered = false;
