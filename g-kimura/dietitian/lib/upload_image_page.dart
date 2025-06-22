@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dietitian/storage_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -75,6 +76,12 @@ class UploadImagePageState extends State<UploadImagePage> {
       await Future.delayed(Duration(seconds: 1));
       _analysisResult = await analyzeImage(_imageUrl!);
       print("✅ 分析結果: $_analysisResult");
+      //分析結果をデバイスに保存
+      Map<String, String> analysisResultMap = {
+        for (var entry in _analysisResult!.entries)
+          entry.key: entry.value.toString(),
+      };
+      StorageHelper.saveData(analysisResultMap, 'analysis_result');
       setState(() {
         _uploadState = UploadState.analysisComplete;
       });
