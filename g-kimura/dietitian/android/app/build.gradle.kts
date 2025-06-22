@@ -11,7 +11,8 @@ plugins {
 android {
     namespace = "com.example.dietitian"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    // 自分で変更
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
