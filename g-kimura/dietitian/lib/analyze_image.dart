@@ -31,15 +31,23 @@ Future<Map<String, dynamic>?> analyzeImage(String imageUrl) async {
   });
 
   // 2.5 ユーザーデータの取得
-  final userData = await StorageHelper.loadData('google_auth_data');
-  if (userData == null) {
-    print('ユーザーデータが存在しません');
-    return null; // または適切なエラー処理
-  }
-  final accessToken = userData['accessToken'];
-  if (accessToken == null || accessToken.isEmpty) {
-    print('accessToken が取得できませんでした');
-    return null; // または適切なエラー処理
+  Map<String, dynamic>? userData;
+  String? accessToken;
+  try {
+    userData = await StorageHelper.loadData('google_auth_data');
+    if (userData == null) {
+      print('エラー: ユーザーデータが存在しません');
+      return null;
+    }
+    accessToken = userData['accessToken'];
+    if (accessToken == null || accessToken.isEmpty) {
+      print('エラー: accessToken が取得できませんでした');
+      return null;
+    }
+  } catch (e, stack) {
+    print('エラー: ユーザーデータが取得できませんでした: $e');
+    print(stack);
+    return null;
   }
 
   // 3. FastAPI へアップロード
@@ -60,9 +68,8 @@ Future<Map<String, dynamic>?> analyzeImage(String imageUrl) async {
 
   final response = resp.data;
 
-  //エラーハンドリング
   if (response is Map<String, dynamic> && response.containsKey('error')) {
-    print('Error: ${response['error']}');
+    print('エラー: ${response['error']}');
     return null;
   }
   if (response is Map<String, dynamic> && response.containsKey('result')) {

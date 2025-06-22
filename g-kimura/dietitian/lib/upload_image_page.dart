@@ -17,6 +17,7 @@ class UploadImagePageState extends State<UploadImagePage> {
   String? _imageUrl;
   Map<String, dynamic>? _analysisResult;
   UploadState _uploadState = UploadState.idle;
+  String _errorMessage = "";
 
   // 画像を選択するメソッド
   Future<void> _pickImage(ImageSource source) async {
@@ -30,7 +31,8 @@ class UploadImagePageState extends State<UploadImagePage> {
         _uploadState = UploadState.imagePicked;
       });
     } catch (e) {
-      print("❌ 画像選択エラー: $e");
+      print("❌ 画像の選択に失敗しました: $e");
+      _errorMessage = e.toString();
       setState(() {
         _uploadState = UploadState.imagePickFailed;
       });
@@ -51,13 +53,14 @@ class UploadImagePageState extends State<UploadImagePage> {
       });
       await imageRef.putFile(_image!);
       final downloadUrl = await imageRef.getDownloadURL();
-      print("✅ アップロード完了: $downloadUrl");
+      print("✅ アップロードが完了しました: $downloadUrl");
       setState(() {
         _imageUrl = downloadUrl;
         _uploadState = UploadState.uploadComplete;
       });
     } catch (e) {
-      print("❌ アップロード失敗: $e");
+      print("❌ アップロードに失敗しました: $e");
+      _errorMessage = e.toString();
       setState(() {
         _uploadState = UploadState.uploadFailed;
       });
@@ -76,7 +79,8 @@ class UploadImagePageState extends State<UploadImagePage> {
         _uploadState = UploadState.analysisComplete;
       });
     } catch (e) {
-      print("❌ アップロード失敗: $e");
+      print("❌ 画像分析に失敗しました: $e");
+      _errorMessage = e.toString();
       setState(() {
         _uploadState = UploadState.uploadFailed;
       });
@@ -166,17 +170,17 @@ class UploadImagePageState extends State<UploadImagePage> {
           children: [Text("画像が選択されました。"), Text("アップロードして分析しましょう！")],
         );
       case UploadState.imagePickFailed:
-        return Text("画像の選択に失敗しました。");
+        return Text("画像の選択に失敗しました。 $_errorMessage");
       case UploadState.uploading:
         return loadingIndicator("アップロード中...");
       case UploadState.uploadFailed:
-        return Text("アップロードに失敗しました。");
+        return Text("アップロードに失敗しました。 $_errorMessage");
       case UploadState.uploadComplete:
         return Column(children: [Text("アップロードに成功しました！"), Text("分析を開始します。")]);
       case UploadState.analyzing:
         return loadingIndicator("分析中...");
       case UploadState.analyzeFailed:
-        return Text("分析に失敗しました。");
+        return Text("分析に失敗しました。 $_errorMessage");
       case UploadState.analysisComplete:
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
