@@ -36,6 +36,7 @@ class GoogleLoginPageState extends State<GoogleLoginPage> {
       await StorageHelper.saveData(userData, 'google_auth_data');
 
       // 3. ユーザー登録APIにトークンを渡す
+      bool isRegistered = false;
       try {
         final dio = Dio();
         final response = await dio.post(
@@ -46,6 +47,12 @@ class GoogleLoginPageState extends State<GoogleLoginPage> {
               (sent, total) =>
                   print('upload ${(sent / total * 100).toStringAsFixed(1)} %'),
         );
+        if (response.data['name'] != "") {
+          isRegistered = true;
+          print('ユーザー情報が存在します: ${response.data}');
+        } else {
+          print('ユーザー情報が存在しません: ${response.data}');
+        }
         print('✅ ユーザー登録成功');
       } catch (e) {
         print('❌ ユーザー登録失敗: $e');
@@ -66,12 +73,11 @@ class GoogleLoginPageState extends State<GoogleLoginPage> {
       // 5. ページ移動
       // 　すでにユーザデータがある場合はホームページへ遷移
       // 　ない場合はマイ情報登録ページへ遷移
-      // 　分岐未実装、とりあえずマイ情報登録ページへ遷移
       if (!mounted) {
         print("ページがマウントされていません");
         return;
       }
-      if (false) {
+      if (isRegistered) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomePage()),
