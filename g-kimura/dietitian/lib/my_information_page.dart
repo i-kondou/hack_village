@@ -86,6 +86,12 @@ class MyInformationPageState extends State<MyInformationPage> {
       if (isSame) {
         print('✅ ユーザー情報登録に成功しました');
         _showMessage('保存しました。');
+        //ホーム画面に戻る
+        if (!mounted) {
+          print("ページがマウントされていません");
+          return;
+        }
+        Navigator.pop(context);
       } else {
         print('❌ ユーザー情報登録に失敗しました: ${response.data}');
         _showMessage('保存に失敗しました。もう一度お試しください。');
