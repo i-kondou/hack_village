@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'storage_helper.dart';
 
 class MyInformationPage extends StatefulWidget {
+  const MyInformationPage({super.key});
+
   @override
-  _MyInformationPageState createState() => _MyInformationPageState();
+  MyInformationPageState createState() => MyInformationPageState();
 }
 
-class _MyInformationPageState extends State<MyInformationPage> {
+class MyInformationPageState extends State<MyInformationPage> {
   List<String> keys = ['名前', '年齢', '性別', '身長 (cm)', '体重 (kg)'];
-  Map<String, TextEditingController> _controllers = {};
+  final Map<String, TextEditingController> _controllers = {};
   String _selectedGender = '未選択';
 
   @override
@@ -107,7 +108,7 @@ class _MyInformationPageState extends State<MyInformationPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            ...keys.map(_buildElement).toList(),
+            ...keys.map(_buildElement),
             SizedBox(height: 32),
             ElevatedButton(onPressed: _save, child: Text('保存する')),
           ],

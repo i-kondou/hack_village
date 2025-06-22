@@ -48,7 +48,7 @@ Future<Map<String, dynamic>?> analyzeImage(String imageUrl) async {
     data: form,
     options: Options(
       contentType: 'multipart/form-data',
-      headers: {'Authorization': 'Bearer ${accessToken}'},
+      headers: {'Authorization': 'Bearer $accessToken'},
     ),
     onSendProgress:
         (sent, total) =>
