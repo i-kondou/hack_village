@@ -41,6 +41,10 @@ class MyInformationPageState extends State<MyInformationPage> {
         if (key == '性別') key: _selectedGender else key: _controllers[key]!.text,
     };
     await StorageHelper.saveData(data, 'my_information');
+    if (!mounted){
+        print("ページがマウントされていません");
+        return;
+      }
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text('保存しました')));

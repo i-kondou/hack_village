@@ -47,6 +47,10 @@ class GoogleLoginPageState extends State<GoogleLoginPage> {
       });
 
       // 3. ログイン後はHomePageに移動する
+      if (!mounted){
+        print("ページがマウントされていません");
+        return;
+      }
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomePage()),

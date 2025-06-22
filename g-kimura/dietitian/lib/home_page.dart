@@ -32,8 +32,8 @@ class HomePageState extends State<HomePage> {
       _dailyMessage = dailyMessageForMar7th;
     } else {
       // 日にちをシードにして固定のランダムメッセージを出す
-      final randomEngine= Random((seed ?? 1) * now.day);
-      final index=randomEngine.nextInt(dailyMessages.length);
+      final randomEngine = Random((seed ?? 1) * now.day);
+      final index = randomEngine.nextInt(dailyMessages.length);
       _dailyMessage = dailyMessages[index];
     }
   }
@@ -78,6 +78,10 @@ class HomePageState extends State<HomePage> {
               onPressed: () async {
                 await GoogleSignIn().signOut();
                 await FirebaseAuth.instance.signOut();
+                if (!context.mounted) {
+                  print("ページがマウントされていません");
+                  return;
+                }
                 Navigator.pushNamed(context, '/googleLoginPage');
               },
               child: Text('ログアウト'),
