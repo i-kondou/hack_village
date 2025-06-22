@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:path/path.dart' as p;
 import 'package:http_parser/http_parser.dart';
+import 'storage_helper.dart';
 
 Future<Map<String, dynamic>?> analyzeImage(String imageUrl) async {
   final uri = Uri.parse(
@@ -29,11 +30,26 @@ Future<Map<String, dynamic>?> analyzeImage(String imageUrl) async {
     ),
   });
 
+  // 2.5 ユーザーデータの取得
+  final userData = await StorageHelper.loadData('google_auth_data');
+  if (userData == null) {
+    print('ユーザーデータが存在しません');
+    return null; // または適切なエラー処理
+  }
+  final accessToken = userData['accessToken'];
+  if (accessToken == null || accessToken.isEmpty) {
+    print('accessToken が取得できませんでした');
+    return null; // または適切なエラー処理
+  }
+
   // 3. FastAPI へアップロード
   final resp = await dio.post(
     '/',
     data: form,
-    options: Options(contentType: 'multipart/form-data'),
+    options: Options(
+      contentType: 'multipart/form-data',
+      headers: {'Authorization': 'Bearer ${accessToken}'},
+    ),
     onSendProgress:
         (sent, total) =>
             print('upload ${(sent / total * 100).toStringAsFixed(1)} %'),

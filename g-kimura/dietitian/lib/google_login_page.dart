@@ -2,7 +2,7 @@ import 'package:dietitian/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'upload_image_page.dart'; // 画像アップロードのためのインポート
+import 'storage_helper.dart';
 
 class GoogleLoginPage extends StatefulWidget {
   @override
@@ -23,6 +23,13 @@ class _GoogleLoginPageState extends State<GoogleLoginPage> {
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
+
+      // 1.5. ローカルに保存
+      Map<String, String> userData = {
+        'accessToken': googleAuth.accessToken ?? '',
+        'idToken': googleAuth.idToken ?? '',
+      };
+      await StorageHelper.saveData(userData, 'google_auth_data');
 
       // 2. Firebase に認証情報を渡す
       final credential = GoogleAuthProvider.credential(
