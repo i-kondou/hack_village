@@ -193,23 +193,23 @@ class UploadImagePageState extends State<UploadImagePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // data から取り出して表示
-            _buildMenuName("menu"),
-            SizedBox(height: 10),
-            _buildAnalysisResult("calorie", "カロリー"),
-            _buildAnalysisResult("protein", "タンパク質"),
-            _buildAnalysisResult("fat", "脂質"),
-            _buildAnalysisResult("carbohydrate", "炭水化物"),
-            _buildAnalysisResult("dietary_fiber", "食物繊維"),
-            _buildAnalysisResult("vitamin", "ビタミン"),
-            _buildAnalysisResult("mineral", "ミネラル"),
-            _buildAnalysisResult("sodium", "ナトリウム"),
+            _buildBoldText("menu"),
+            _buildText("calorie", "カロリー"),
+            _buildText("protein", "タンパク質"),
+            _buildText("fat", "脂質"),
+            _buildText("carbohydrate", "炭水化物"),
+            _buildText("dietary_fiber", "食物繊維"),
+            _buildText("vitamin", "ビタミン"),
+            _buildText("mineral", "ミネラル"),
+            _buildText("sodium", "ナトリウム"),
+            _buildBoldText("advice_message"),
           ],
         );
     }
   }
 
   // メニュー名は別
-  Widget _buildMenuName(String key) {
+  Widget _buildBoldText(String key) {
     return Text(
       "${_analysisResult![key]}",
       style: TextStyle(
@@ -221,7 +221,7 @@ class UploadImagePageState extends State<UploadImagePage> {
   }
 
   // 要素ごとの表示
-  Widget _buildAnalysisResult(String key, String name) {
+  Widget _buildText(String key, String name) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
