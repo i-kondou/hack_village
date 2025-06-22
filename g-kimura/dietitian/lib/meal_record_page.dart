@@ -54,15 +54,53 @@ class MealRecordPageState extends State<MealRecordPage> {
             final data = snapshot.data!;
             return ListView(
               padding: const EdgeInsets.all(16.0),
-              children:
-                  data
-                      .map(
-                        (entry) => ListTile(
-                          title: Text(entry.keys.join(', ')),
-                          subtitle: Text(entry.values.join(', ')),
-                        ),
-                      )
-                      .toList(),
+              children: [
+                const Text(
+                  '記録一覧',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16),
+                ...data.map((entry) {
+                  return Card(
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children:
+                            entry.entries.map((e) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 4.0,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: Text(
+                                        e.key,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 5,
+                                      child: Text(
+                                        e.value,
+                                        style: const TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ],
             );
           } else {
             return const Center(child: Text('記録が見つかりません'));
