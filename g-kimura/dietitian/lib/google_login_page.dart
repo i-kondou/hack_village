@@ -2,7 +2,6 @@ import 'package:dietitian/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'upload_image_page.dart'; // 画像アップロードのためのインポート
 
 class GoogleLoginPage extends StatefulWidget {
   @override
