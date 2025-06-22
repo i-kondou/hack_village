@@ -1,5 +1,5 @@
 import 'package:dietitian/google_login_page.dart';
-import 'package:dietitian/mealRecordPage.dart';
+import 'package:dietitian/meal_record_page.dart';
 import 'package:dietitian/upload_image_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
