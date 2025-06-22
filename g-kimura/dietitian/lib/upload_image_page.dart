@@ -13,10 +13,9 @@ class UploadImagePage extends StatefulWidget {
 class _UploadImagePageState extends State<UploadImagePage> {
   final ImagePicker _picker = ImagePicker();
   File? _image;
-  String? _uploadedImageUrl;
-  Map<String, dynamic>? analysisResult;
-  bool _isUploading = false;
-  bool _isAnalyzing = false;
+  String? _imageUrl;
+  Map<String, dynamic>? _analysisResult;
+  UploadState _uploadState = UploadState.idle;
 
   // 画像を選択するメソッド
   Future<void> _pickImage(ImageSource source) async {
@@ -25,9 +24,15 @@ class _UploadImagePageState extends State<UploadImagePage> {
       if (pickedFile == null) return;
       setState(() {
         _image = File(pickedFile.path);
+        _imageUrl = null; // URLをリセット
+        _analysisResult = null; // 分析結果をリセット
+        _uploadState = UploadState.imagePicked;
       });
     } catch (e) {
       print("❌ 画像選択エラー: $e");
+      setState(() {
+        _uploadState = UploadState.imagePickFailed;
+      });
     }
   }
 
@@ -38,31 +43,42 @@ class _UploadImagePageState extends State<UploadImagePage> {
       "images/${DateTime.now().millisecondsSinceEpoch}.jpg",
     );
 
+    // 画像のアップロード
     try {
-      // 画像のアップロード
       setState(() {
-        _isUploading = true;
+        _uploadState = UploadState.uploading;
       });
       await imageRef.putFile(_image!);
       final downloadUrl = await imageRef.getDownloadURL();
-      setState(() {
-        _uploadedImageUrl = downloadUrl;
-        _isUploading = false;
-      });
       print("✅ アップロード完了: $downloadUrl");
-
-      // 画像分析を実行
       setState(() {
-        _isAnalyzing = true;
+        _imageUrl = downloadUrl;
+        _uploadState = UploadState.uploadComplete;
       });
-      await Future.delayed(Duration(seconds: 1));
-      analysisResult = await analyzeImage(downloadUrl);
-      setState(() {
-        _isAnalyzing = false;
-      });
-      print("✅ 分析結果: ${analysisResult}");
     } catch (e) {
       print("❌ アップロード失敗: $e");
+      setState(() {
+        _uploadState = UploadState.uploadFailed;
+      });
+      return;
+    }
+
+    // 画像分析を実行
+    try {
+      setState(() {
+        _uploadState = UploadState.analyzing;
+      });
+      await Future.delayed(Duration(seconds: 1));
+      _analysisResult = await analyzeImage(_imageUrl!);
+      print("✅ 分析結果: ${_analysisResult}");
+      setState(() {
+        _uploadState = UploadState.analysisComplete;
+      });
+    } catch (e) {
+      print("❌ アップロード失敗: $e");
+      setState(() {
+        _uploadState = UploadState.uploadFailed;
+      });
     }
   }
 
@@ -141,40 +157,49 @@ class _UploadImagePageState extends State<UploadImagePage> {
 
   // 詳細情報表示
   Widget DetailInfo() {
-    if (_isUploading) {
-      return LoadingIndicator("アップロード中...");
-    } else if (_isAnalyzing) {
-      return LoadingIndicator("分析中...");
-    } else if (_image == null) {
-      return Text("画像が選択されていません");
-    } else if (_uploadedImageUrl == null) {
-      return Text("画像がアップロードされていません");
-    } else if (analysisResult != null) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          // data から取り出して表示
-          _buildMenuName("menu"),
-          SizedBox(height: 10),
-          _buildAnalysisResult("calorie", "カロリー"),
-          _buildAnalysisResult("protein", "タンパク質"),
-          _buildAnalysisResult("fat", "脂質"),
-          _buildAnalysisResult("carbohydrate", "炭水化物"),
-          _buildAnalysisResult("dietary_fiber", "食物繊維"),
-          _buildAnalysisResult("vitamin", "ビタミン"),
-          _buildAnalysisResult("mineral", "ミネラル"),
-          _buildAnalysisResult("sodium", "ナトリウム"),
-        ],
-      );
-    } else {
-      return Text("よくわからない状況です。");
+    switch (_uploadState) {
+      case UploadState.idle:
+        return Text("今日食べた料理の画像を選択しましょう！");
+      case UploadState.imagePicked:
+        return Column(
+          children: [Text("画像が選択されました。"), Text("アップロードして分析しましょう！")],
+        );
+      case UploadState.imagePickFailed:
+        return Text("画像の選択に失敗しました。");
+      case UploadState.uploading:
+        return LoadingIndicator("アップロード中...");
+      case UploadState.uploadFailed:
+        return Text("アップロードに失敗しました。");
+      case UploadState.uploadComplete:
+        return Column(children: [Text("アップロードに成功しました！"), Text("分析を開始します。")]);
+      case UploadState.analyzing:
+        return LoadingIndicator("分析中...");
+      case UploadState.analyzeFailed:
+        return Text("分析に失敗しました。");
+      case UploadState.analysisComplete:
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // data から取り出して表示
+            _buildMenuName("menu"),
+            SizedBox(height: 10),
+            _buildAnalysisResult("calorie", "カロリー"),
+            _buildAnalysisResult("protein", "タンパク質"),
+            _buildAnalysisResult("fat", "脂質"),
+            _buildAnalysisResult("carbohydrate", "炭水化物"),
+            _buildAnalysisResult("dietary_fiber", "食物繊維"),
+            _buildAnalysisResult("vitamin", "ビタミン"),
+            _buildAnalysisResult("mineral", "ミネラル"),
+            _buildAnalysisResult("sodium", "ナトリウム"),
+          ],
+        );
     }
   }
 
   // メニュー名は別
   Widget _buildMenuName(String key) {
     return Text(
-      "${analysisResult![key]}",
+      "${_analysisResult![key]}",
       style: TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 18,
@@ -193,11 +218,25 @@ class _UploadImagePageState extends State<UploadImagePage> {
         Padding(
           padding: const EdgeInsets.only(right: 40.0),
           child:
-              (analysisResult != null && analysisResult!.containsKey(key))
-                  ? Text("${analysisResult![key]}")
+              (_analysisResult != null && _analysisResult!.containsKey(key))
+                  ? Text("${_analysisResult![key]}")
                   : Text("データがありません"),
         ),
       ],
     );
   }
+}
+
+// ====================================================
+// 状態管理
+enum UploadState {
+  idle,
+  imagePicked,
+  imagePickFailed,
+  uploading,
+  uploadFailed,
+  uploadComplete,
+  analyzing,
+  analyzeFailed,
+  analysisComplete,
 }
