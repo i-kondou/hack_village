@@ -5,11 +5,13 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'recources/daily_messages.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
-  _HomePageState createState() => _HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> {
   User? _user;
   String _dailyMessage = '';
 
@@ -25,14 +27,14 @@ class _HomePageState extends State<HomePage> {
 
     // 特定日メッセージ（例：29日は「肉の日」）
     if (now.day == 29) {
-      _dailyMessage = daily_message_for_29th;
+      _dailyMessage = dailyMessageFor29th;
     } else if (now.month == 3 && now.day == 7) {
-      _dailyMessage = daily_message_for_Mar_7th;
+      _dailyMessage = dailyMessageForMar7th;
     } else {
       // 日にちをシードにして固定のランダムメッセージを出す
       final randomEngine= Random((seed ?? 1) * now.day);
-      final index=randomEngine.nextInt(daily_messages.length);
-      _dailyMessage = daily_messages[index];
+      final index=randomEngine.nextInt(dailyMessages.length);
+      _dailyMessage = dailyMessages[index];
     }
   }
 

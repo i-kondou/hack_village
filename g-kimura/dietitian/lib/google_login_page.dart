@@ -5,11 +5,13 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'storage_helper.dart';
 
 class GoogleLoginPage extends StatefulWidget {
+  const GoogleLoginPage({super.key});
+
   @override
-  _GoogleLoginPageState createState() => _GoogleLoginPageState();
+  GoogleLoginPageState createState() => GoogleLoginPageState();
 }
 
-class _GoogleLoginPageState extends State<GoogleLoginPage> {
+class GoogleLoginPageState extends State<GoogleLoginPage> {
   User? _user;
 
   Future<void> _signInWithGoogle() async {

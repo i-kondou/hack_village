@@ -5,11 +5,13 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'analyze_image.dart';
 
 class UploadImagePage extends StatefulWidget {
+  const UploadImagePage({super.key});
+
   @override
-  _UploadImagePageState createState() => _UploadImagePageState();
+  UploadImagePageState createState() => UploadImagePageState();
 }
 
-class _UploadImagePageState extends State<UploadImagePage> {
+class UploadImagePageState extends State<UploadImagePage> {
   final ImagePicker _picker = ImagePicker();
   File? _image;
   String? _imageUrl;
@@ -69,7 +71,7 @@ class _UploadImagePageState extends State<UploadImagePage> {
       });
       await Future.delayed(Duration(seconds: 1));
       _analysisResult = await analyzeImage(_imageUrl!);
-      print("✅ 分析結果: ${_analysisResult}");
+      print("✅ 分析結果: $_analysisResult");
       setState(() {
         _uploadState = UploadState.analysisComplete;
       });
@@ -98,14 +100,14 @@ class _UploadImagePageState extends State<UploadImagePage> {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [SelectCameraButton(), SelectAlbumButton()],
+                  children: [selectCameraButton(), selectAlbumButton()],
                 ),
               ],
             ),
             SizedBox(height: 20),
-            UploadButton(),
+            uploadButton(),
             SizedBox(height: 20),
-            DetailInfo(),
+            detailInfo(),
           ],
         ),
       ),
@@ -116,7 +118,7 @@ class _UploadImagePageState extends State<UploadImagePage> {
   //  ↓↓ ここから下　Widget 宣言 ↓↓
 
   // アップロードボタン
-  Widget UploadButton() {
+  Widget uploadButton() {
     return ElevatedButton.icon(
       onPressed:
           _image != null ? () async => await _uploadImageToFirebase() : null,
@@ -129,7 +131,7 @@ class _UploadImagePageState extends State<UploadImagePage> {
   }
 
   // カメラ選択ボタン
-  Widget SelectCameraButton() {
+  Widget selectCameraButton() {
     return ElevatedButton.icon(
       onPressed: () => _pickImage(ImageSource.camera),
       icon: Icon(Icons.camera_alt),
@@ -138,7 +140,7 @@ class _UploadImagePageState extends State<UploadImagePage> {
   }
 
   // アルバム選択ボタン
-  Widget SelectAlbumButton() {
+  Widget selectAlbumButton() {
     return ElevatedButton.icon(
       onPressed: () => _pickImage(ImageSource.gallery),
       icon: Icon(Icons.photo),
@@ -147,7 +149,7 @@ class _UploadImagePageState extends State<UploadImagePage> {
   }
 
   // ローディングインジケーター
-  Widget LoadingIndicator(String message) {
+  Widget loadingIndicator(String message) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [CircularProgressIndicator(), Text(message)],
@@ -155,7 +157,7 @@ class _UploadImagePageState extends State<UploadImagePage> {
   }
 
   // 詳細情報表示
-  Widget DetailInfo() {
+  Widget detailInfo() {
     switch (_uploadState) {
       case UploadState.idle:
         return Text("今日食べた料理の画像を選択しましょう！");
@@ -166,13 +168,13 @@ class _UploadImagePageState extends State<UploadImagePage> {
       case UploadState.imagePickFailed:
         return Text("画像の選択に失敗しました。");
       case UploadState.uploading:
-        return LoadingIndicator("アップロード中...");
+        return loadingIndicator("アップロード中...");
       case UploadState.uploadFailed:
         return Text("アップロードに失敗しました。");
       case UploadState.uploadComplete:
         return Column(children: [Text("アップロードに成功しました！"), Text("分析を開始します。")]);
       case UploadState.analyzing:
-        return LoadingIndicator("分析中...");
+        return loadingIndicator("分析中...");
       case UploadState.analyzeFailed:
         return Text("分析に失敗しました。");
       case UploadState.analysisComplete:
