@@ -52,7 +52,7 @@ Future<Map<String, dynamic>?> analyzeImage(String imageUrl) async {
 
   // 3. FastAPI へアップロード
   final resp = await dio.post(
-    '/',
+    '/dummy/nutrition',
     data: form,
     options: Options(
       contentType: 'multipart/form-data',
