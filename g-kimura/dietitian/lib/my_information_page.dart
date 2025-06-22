@@ -47,7 +47,7 @@ class MyInformationPageState extends State<MyInformationPage> {
   }
 
   void _initializeIdToken() async {
-    final data = await StorageHelper.loadData('google_auth_data');
+    final data = await StorageHelper.loadMap('google_auth_data');
     setState(() {
       userData['id_token'] = data?['idToken'] ?? "";
     });

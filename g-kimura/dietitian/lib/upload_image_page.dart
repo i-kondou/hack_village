@@ -40,6 +40,22 @@ class UploadImagePageState extends State<UploadImagePage> {
     }
   }
 
+  // 分析結果を保存するメソッド
+  Future<void> saveResult(Map<String, dynamic> result) async {
+    //何階目の食事か
+    result['meal_number'] = await StorageHelper.loadString('meal_number', '1');
+    final mealNumber = int.parse(result['meal_number']);
+    // meal_numberに応じてキーを変更
+    final String key = 'analysis_result_$mealNumber';
+    //日付情報追加
+    result.addEntries([MapEntry("date", DateTime.now().toLocal().toString())]);
+    StorageHelper.saveMap(result, key);
+    // 次の食事のためにmeal_numberを更新
+    await StorageHelper.saveString('meal_number', (mealNumber + 1).toString());
+    // 保存完了のメッセージ
+    print("✅ 分析結果を保存しました: $key");
+  }
+
   // Firebase Storageに画像をアップロードするメソッド
   Future<void> _uploadImageToFirebase() async {
     final storageRef = FirebaseStorage.instance.ref();
@@ -76,12 +92,8 @@ class UploadImagePageState extends State<UploadImagePage> {
       await Future.delayed(Duration(seconds: 1));
       _analysisResult = await analyzeImage(_imageUrl!);
       print("✅ 分析結果: $_analysisResult");
-      //分析結果をデバイスに保存
-      Map<String, String> analysisResultMap = {
-        for (var entry in _analysisResult!.entries)
-          entry.key: entry.value.toString(),
-      };
-      StorageHelper.saveData(analysisResultMap, 'analysis_result');
+      // 分析結果を保存
+      saveResult(_analysisResult!);
       setState(() {
         _uploadState = UploadState.analysisComplete;
       });
