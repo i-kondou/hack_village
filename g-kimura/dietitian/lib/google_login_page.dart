@@ -46,7 +46,7 @@ class GoogleLoginPageState extends State<GoogleLoginPage> {
               (sent, total) =>
                   print('upload ${(sent / total * 100).toStringAsFixed(1)} %'),
         );
-        print('✅ ユーザー登録成功');
+        print('✅ ユーザー登録成功: ${response.data}');
       } catch (e) {
         print('❌ ユーザー登録失敗: $e');
       }
