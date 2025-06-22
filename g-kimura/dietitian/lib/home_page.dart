@@ -50,7 +50,7 @@ class HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset('assets/images/kano-eiyo.png'),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             Text(
               displayName != null ? 'こんにちは、$displayName さん' : 'ユーザーID: $uid',
               style: TextStyle(fontSize: 18),
@@ -61,21 +61,28 @@ class HomePageState extends State<HomePage> {
               style: TextStyle(fontSize: 16, color: Colors.green[700]),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 40),
+            SizedBox(height: 10),
             ElevatedButton(
               child: Text('画像をアップロード'),
               onPressed: () {
                 Navigator.pushNamed(context, '/uploadImagePage');
               },
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             ElevatedButton(
               child: Text('マイ情報'),
               onPressed: () {
                 Navigator.pushNamed(context, '/myInformationPage');
               },
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
+            ElevatedButton(
+              child: Text('食事記録'),
+              onPressed: () {
+                Navigator.pushNamed(context, '/mealRecordPage');
+              },
+            ),
+            SizedBox(height: 10),
             ElevatedButton(
               onPressed: () async {
                 await GoogleSignIn().signOut();
