@@ -38,6 +38,37 @@ class HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> _onLogoutButtonPressed() async {
+    return showDialog<bool>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text('ログアウト確認'),
+            content: Text('本当にログアウトしますか？'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text('キャンセル'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text('ログアウト'),
+              ),
+            ],
+          ),
+    ).then((shouldLogout) async {
+      if (shouldLogout == true) {
+        await GoogleSignIn().signOut();
+        await FirebaseAuth.instance.signOut();
+        if (!mounted) {
+          print("ページがマウントされていません");
+          return;
+        }
+        Navigator.pushNamed(context, '/googleLoginPage');
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final displayName = _user?.displayName;
@@ -84,15 +115,7 @@ class HomePageState extends State<HomePage> {
             ),
             SizedBox(height: 10),
             ElevatedButton(
-              onPressed: () async {
-                await GoogleSignIn().signOut();
-                await FirebaseAuth.instance.signOut();
-                if (!context.mounted) {
-                  print("ページがマウントされていません");
-                  return;
-                }
-                Navigator.pushNamed(context, '/googleLoginPage');
-              },
+              onPressed: _onLogoutButtonPressed,
               child: Text('ログアウト'),
             ),
           ],
