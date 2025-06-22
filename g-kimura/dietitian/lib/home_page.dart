@@ -49,6 +49,8 @@ class HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Image.asset('assets/images/kano-eiyo.png'),
+            SizedBox(height: 20),
             Text(
               displayName != null ? 'こんにちは、$displayName さん' : 'ユーザーID: $uid',
               style: TextStyle(fontSize: 18),

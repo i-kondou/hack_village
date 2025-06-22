@@ -47,7 +47,7 @@ class GoogleLoginPageState extends State<GoogleLoginPage> {
       });
 
       // 3. ログイン後はHomePageに移動する
-      if (!mounted){
+      if (!mounted) {
         print("ページがマウントされていません");
         return;
       }
@@ -62,45 +62,28 @@ class GoogleLoginPageState extends State<GoogleLoginPage> {
     }
   }
 
-  Future<void> _signOut() async {
-    await GoogleSignIn().signOut();
-    await FirebaseAuth.instance.signOut();
-    setState(() {
-      _user = null;
-    });
-    print("🚪 ログアウトしました");
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Google ログイン")),
+      appBar: AppBar(title: Text("Dietitian")),
       body: Center(
-        child:
-            _user == null
-                ? ElevatedButton.icon(
-                  onPressed: _signInWithGoogle,
-                  icon: Icon(Icons.login),
-                  label: Text("Googleでログイン"),
-                )
-                : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      backgroundImage: NetworkImage(_user!.photoURL ?? ""),
-                      radius: 40,
-                    ),
-                    SizedBox(height: 10),
-                    Text("ようこそ, ${_user!.displayName}"),
-                    Text("Email: ${_user!.email}"),
-                    SizedBox(height: 20),
-                    ElevatedButton.icon(
-                      onPressed: _signOut,
-                      icon: Icon(Icons.logout),
-                      label: Text("ログアウト"),
-                    ),
-                  ],
-                ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "毎日の食事を管理し、\n健康的な食生活を送りましょう。",
+              style: TextStyle(fontSize: 20),
+              textAlign: TextAlign.center,
+            ),
+            Image.asset('assets/images/kano-eiyo.png'),
+            SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: _signInWithGoogle,
+              icon: Icon(Icons.login),
+              label: Text("Googleでログイン"),
+            ),
+          ],
+        ),
       ),
     );
   }
