@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'storage_helper.dart';
 
 class MyInformationPage extends StatefulWidget {
   const MyInformationPage({super.key});
@@ -11,12 +12,12 @@ class MyInformationPage extends StatefulWidget {
 class MyInformationPageState extends State<MyInformationPage> {
   // ユーザー情報
   Map<String, dynamic> userData = {
-    "id_token": "string",
-    "name": "string",
+    "id_token": "",
+    "name": "",
     "height": 0,
     "weight": 0,
     "age": 0,
-    "sex": "string",
+    "sex": "",
   };
 
   // キーと表示名のマッピング
@@ -24,8 +25,8 @@ class MyInformationPageState extends State<MyInformationPage> {
     'name': '名前',
     'age': '年齢',
     'sex': '性別',
-    'height (cm)': '身長 (cm)',
-    'weight (kg)': '体重 (kg)',
+    'height': '身長 (cm)',
+    'weight': '体重 (kg)',
   };
   final Map<String, TextEditingController> _controllers = {};
   String _selectedGender = '未選択';
@@ -39,7 +40,15 @@ class MyInformationPageState extends State<MyInformationPage> {
         _controllers[key] = TextEditingController();
       }
     }
+    _initializeIdToken();
     _load();
+  }
+
+  void _initializeIdToken() async {
+    final data = await StorageHelper.loadData('google_auth_data');
+    setState(() {
+      userData['id_token'] = data?['idToken'] ?? "";
+    });
   }
 
   // 各コントローラーを破棄
@@ -51,19 +60,58 @@ class MyInformationPageState extends State<MyInformationPage> {
     super.dispose();
   }
 
-  // 成功失敗の表示
+  // メッセージの表示
   void _showMessage(String message) {
     if (!mounted) {
       print("ページがマウントされていません");
       return;
     }
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar(); // 現在のSnackBarを即座に消す
+    messenger.showSnackBar(
+      SnackBar(content: Text(message), duration: Duration(seconds: 2)),
+    );
+  }
+
+  // 全ての情報が入力されているかチェック
+  bool _isFormValid() {
+    if (userData["id_token"] == null || userData["id_token"] == "") {
+      _showMessage('IDが取得できません。');
+      return false;
+    } else if (userData["name"] == null || userData["name"] == "") {
+      _showMessage('名前を入力してください。');
+      return false;
+    } else if (userData["age"] == null || userData["age"] <= 0) {
+      _showMessage('年齢を正しく入力してください。');
+      return false;
+    } else if (userData["height"] == null || userData["height"] <= 0) {
+      _showMessage('身長を正しく入力してください。');
+      return false;
+    } else if (userData["weight"] == null || userData["weight"] <= 0) {
+      _showMessage('体重を正しく入力してください。');
+      return false;
+    } else if (userData["sex"] == null || userData["sex"] == "") {
+      _showMessage('性別を選択してください。');
+      return false;
+    }
+    return true;
   }
 
   // データの保存処理
   void _save() async {
+    // 入力データを反映
+    userData["name"] = _controllers["name"]?.text ?? "";
+    userData["age"] = int.tryParse(_controllers["age"]?.text ?? "") ?? 0;
+    userData["height"] = int.tryParse(_controllers["height"]?.text ?? "") ?? 0;
+    userData["weight"] = int.tryParse(_controllers["weight"]?.text ?? "") ?? 0;
+    userData["sex"] = _selectedGender == '未選択' ? null : _selectedGender;
+
+    // 入力チェック
+    if (!_isFormValid()) {
+      print('❌ 入力内容に不備があります。');
+      return;
+    }
+
     // ユーザー情報登録APIにトークンを渡す
     try {
       final dio = Dio();
@@ -84,7 +132,7 @@ class MyInformationPageState extends State<MyInformationPage> {
           response.data['age'] == userData['age'] &&
           response.data['sex'] == userData['sex'];
       if (isSame) {
-        print('✅ ユーザー情報登録に成功しました');
+        print('✅ ユーザー情報登録に成功しました: ${response.data}');
         _showMessage('保存しました。');
       } else {
         print('❌ ユーザー情報登録に失敗しました: ${response.data}');
