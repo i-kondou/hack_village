@@ -82,7 +82,7 @@ class UploadImagePageState extends State<UploadImagePage> {
       print("❌ 画像分析に失敗しました: $e");
       _errorMessage = e.toString();
       setState(() {
-        _uploadState = UploadState.uploadFailed;
+        _uploadState = UploadState.analyzeFailed;
       });
     }
   }
