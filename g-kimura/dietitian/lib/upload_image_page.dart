@@ -76,9 +76,9 @@ class UploadImagePageState extends State<UploadImagePage> {
         _uploadState = UploadState.analysisComplete;
       });
     } catch (e) {
-      print("❌ アップロード失敗: $e");
+      print("❌ 分析失敗: $e");
       setState(() {
-        _uploadState = UploadState.uploadFailed;
+        _uploadState = UploadState.analyzeFailed;
       });
     }
   }
