@@ -1,9 +1,9 @@
 import 'dart:io';
-import 'package:dietitian/storage_helper.dart';
+import 'package:dietitian/services/storage_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'analyze_image.dart';
+import '../services/analyze_image.dart';
 
 class UploadImagePage extends StatefulWidget {
   const UploadImagePage({super.key});

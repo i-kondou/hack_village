@@ -1,12 +1,12 @@
-import 'package:dietitian/google_login_page.dart';
-import 'package:dietitian/meal_record_page.dart';
-import 'package:dietitian/upload_image_page.dart';
+import 'package:dietitian/pages/google_login_page.dart';
+import 'package:dietitian/pages/meal_record_page.dart';
+import 'package:dietitian/pages/upload_image_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'firebase_options.dart';
-import 'home_page.dart';
-import 'my_information_page.dart';
+import 'services/firebase_options.dart';
+import 'pages/home_page.dart';
+import 'pages/my_information_page.dart';
 
 void main() async {
   print("main() start");

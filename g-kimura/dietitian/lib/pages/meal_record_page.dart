@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'storage_helper.dart'; // loadDataが定義されているファイルをインポート
+import '../services/storage_helper.dart'; // loadDataが定義されているファイルをインポート
 
 class MealRecordPage extends StatefulWidget {
   const MealRecordPage({super.key});

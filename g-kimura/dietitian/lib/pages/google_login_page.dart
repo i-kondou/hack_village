@@ -1,9 +1,9 @@
-import 'package:dietitian/home_page.dart';
-import 'package:dietitian/my_information_page.dart';
+import 'package:dietitian/pages/home_page.dart';
+import 'package:dietitian/pages/my_information_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'storage_helper.dart';
+import '../services/storage_helper.dart';
 import 'package:dio/dio.dart';
 
 class GoogleLoginPage extends StatefulWidget {
