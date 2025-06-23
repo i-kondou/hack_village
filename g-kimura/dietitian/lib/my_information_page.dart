@@ -14,10 +14,9 @@ class MyInformationPage extends StatefulWidget {
 class MyInformationPageState extends State<MyInformationPage> {
   // ユーザー情報
   Map<String, dynamic> userData = {
-    "id_token": "",
     "name": "",
-    "height": 0,
-    "weight": 0,
+    "height": 0.0,
+    "weight": 0.0,
     "age": 0,
     "sex": "",
   };
@@ -42,15 +41,7 @@ class MyInformationPageState extends State<MyInformationPage> {
         _controllers[key] = TextEditingController();
       }
     }
-    _initializeIdToken();
     _load();
-  }
-
-  void _initializeIdToken() async {
-    final data = await StorageHelper.loadMap('google_auth_data');
-    setState(() {
-      userData['id_token'] = data?['idToken'] ?? "";
-    });
   }
 
   // 各コントローラーを破棄
@@ -77,10 +68,7 @@ class MyInformationPageState extends State<MyInformationPage> {
 
   // 全ての情報が入力されているかチェック
   bool _isFormValid() {
-    if (userData["id_token"] == null || userData["id_token"] == "") {
-      _showMessage('IDが取得できません。');
-      return false;
-    } else if (userData["name"] == null || userData["name"] == "") {
+    if (userData["name"] == null || userData["name"] == "") {
       _showMessage('名前を入力してください。');
       return false;
     } else if (userData["age"] == null || userData["age"] <= 0) {
@@ -101,47 +89,46 @@ class MyInformationPageState extends State<MyInformationPage> {
 
   // データの保存処理
   void _save() async {
-    // 入力データを反映
+    // １．入力データを反映、チェック
     userData["name"] = _controllers["name"]?.text ?? "";
     userData["age"] = int.tryParse(_controllers["age"]?.text ?? "") ?? 0;
-    userData["height"] = int.tryParse(_controllers["height"]?.text ?? "") ?? 0;
-    userData["weight"] = int.tryParse(_controllers["weight"]?.text ?? "") ?? 0;
+    userData["height"] =
+        double.tryParse(_controllers["height"]?.text ?? "") ?? 0.0;
+    userData["weight"] =
+        double.tryParse(_controllers["weight"]?.text ?? "") ?? 0.0;
     userData["sex"] = _selectedGender == '未選択' ? null : _selectedGender;
-
-    // 入力チェック
     if (!_isFormValid()) {
       print('❌ 入力内容に不備があります。');
       return;
     }
 
-    // ユーザー情報登録APIにトークンを渡す
+    // ２．ユーザー情報登録APIにトークンを渡す
     try {
       final dio = Dio();
+      final token = await FirebaseAuth.instance.currentUser?.getIdToken();
       final response = await dio.post(
-        'https://dietitian-backend--main-919605860399.us-central1.run.app/dummy/user/update',
+        'https://dietitian-backend--feat-919605860399.us-central1.run.app/user/update',
         data: userData,
-        options: Options(contentType: 'application/json'),
+        options: Options(
+          contentType: 'application/json',
+          headers: {"Authorization": 'Bearer ${token ?? ''}'},
+        ),
         onSendProgress:
             (sent, total) =>
                 print('upload ${(sent / total * 100).toStringAsFixed(1)} %'),
       );
-      // 成功すると全く同じデータが返ってくる
-      final isSame =
-          response.data['id_token'] == userData['id_token'] &&
-          response.data['name'] == userData['name'] &&
-          response.data['height'] == userData['height'] &&
-          response.data['weight'] == userData['weight'] &&
-          response.data['age'] == userData['age'] &&
-          response.data['sex'] == userData['sex'];
-      if (isSame) {
+
+      // ３．リスポンスの確認
+      if (response.statusCode == 204) {
         print('✅ ユーザー情報登録に成功しました: ${response.data}');
         _showMessage('保存しました。');
-        //ホーム画面に戻る
-        if (!mounted) {
-          print("ページがマウントされていません");
-          return;
-        }
+
+        // 最初の情報登録の場合はホームページへ遷移
         if (widget.isFirstLogin) {
+          if (!mounted) {
+            print("ページがマウントされていません");
+            return;
+          }
           Navigator.pushReplacementNamed(context, '/homePage');
         }
       } else {
@@ -157,7 +144,35 @@ class MyInformationPageState extends State<MyInformationPage> {
   // データの読み込み処理
   void _load() async {
     // APIからユーザーデータを取得
-    // エンドポイント未実装
+    try {
+      final dio = Dio();
+      final token = await FirebaseAuth.instance.currentUser?.getIdToken();
+      final response = await dio.get(
+        'https://dietitian-backend--feat-919605860399.us-central1.run.app/user/read',
+        options: Options(
+          contentType: 'application/json',
+          headers: {"Authorization": 'Bearer ${token ?? ''}'},
+        ),
+      );
+      // データを画面に移す
+      if (response.data != null) {
+        userData = response.data;
+        print('✅ ユーザーデータの読み込みに成功しました: $userData');
+        // 各コントローラーにデータをセット
+        _controllers['name']?.text = userData['name'] ?? '';
+        _controllers['age']?.text = userData['age']?.toString() ?? '';
+        _controllers['height']?.text = userData['height']?.toString() ?? '';
+        _controllers['weight']?.text = userData['weight']?.toString() ?? '';
+        _selectedGender =
+            ['男性', '女性', 'その他'].contains(userData['sex'])
+                ? userData['sex']
+                : '未選択';
+        setState(() {}); // UIを更新
+      }
+    } catch (e) {
+      print('❌ ユーザーデータの読み込みに失敗しました。: $e');
+      _showMessage('ユーザーデータの読み込みに失敗しました。');
+    }
   }
 
   // 各要素を表示するウィジェット
@@ -199,6 +214,7 @@ class MyInformationPageState extends State<MyInformationPage> {
     }
   }
 
+  // 大き目のテキストを表示するウィジェット
   Widget _buildTextField(String text) {
     return Text(
       text,

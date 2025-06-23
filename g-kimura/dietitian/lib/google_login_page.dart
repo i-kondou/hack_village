@@ -35,14 +35,29 @@ class GoogleLoginPageState extends State<GoogleLoginPage> {
       };
       await StorageHelper.saveMap(userData, 'google_auth_data');
 
-      // 3. ユーザー登録APIにトークンを渡す
+      // 3. Firebase に認証情報を渡す
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
+      setState(() {
+        _user = userCredential.user;
+      });
+
+      // 4. ユーザー登録APIにトークンを渡す
       bool isRegistered = false;
       try {
         final dio = Dio();
+        final token = await FirebaseAuth.instance.currentUser?.getIdToken();
         final response = await dio.post(
-          'https://dietitian-backend--main-919605860399.us-central1.run.app/dummy/user/register',
-          data: {'id_token': googleAuth.idToken ?? ''},
-          options: Options(contentType: 'application/json'),
+          'https://dietitian-backend--feat-919605860399.us-central1.run.app/user/create',
+          options: Options(
+            contentType: 'application/json',
+            headers: {'Authorization': 'Bearer ${token ?? ''}'},
+          ),
           onSendProgress:
               (sent, total) =>
                   print('upload ${(sent / total * 100).toStringAsFixed(1)} %'),
@@ -56,19 +71,8 @@ class GoogleLoginPageState extends State<GoogleLoginPage> {
         print('✅ ユーザー登録成功');
       } catch (e) {
         print('❌ ユーザー登録失敗: $e');
+        return;
       }
-
-      // 4. Firebase に認証情報を渡す
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      final userCredential = await FirebaseAuth.instance.signInWithCredential(
-        credential,
-      );
-      setState(() {
-        _user = userCredential.user;
-      });
 
       // 5. ページ移動
       // 　すでにユーザデータがある場合はホームページへ遷移
