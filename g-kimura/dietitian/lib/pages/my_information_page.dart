@@ -1,3 +1,4 @@
+import 'package:dietitian/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,6 +12,8 @@ class MyInformationPage extends StatefulWidget {
 }
 
 class MyInformationPageState extends State<MyInformationPage> {
+  PageState _pageState = PageState.neutral;
+
   // ユーザー情報
   Map<String, dynamic> userData = {
     "name": "",
@@ -88,6 +91,11 @@ class MyInformationPageState extends State<MyInformationPage> {
 
   // データの保存処理
   void _save() async {
+    // ページの状態を保存中に変更
+    setState(() {
+      _pageState = PageState.saving;
+    });
+
     // １．入力データを反映、チェック
     userData["name"] = _controllers["name"]?.text ?? "";
     userData["age"] = int.tryParse(_controllers["age"]?.text ?? "") ?? 0;
@@ -138,10 +146,20 @@ class MyInformationPageState extends State<MyInformationPage> {
       print('❌ ユーザー情報登録に失敗しました: $e');
       _showMessage('保存に失敗しました。もう一度お試しください。');
     }
+
+    // ページの状態を通常に戻す
+    setState(() {
+      _pageState = PageState.neutral;
+    });
   }
 
   // データの読み込み処理
   void _load() async {
+    // ページの状態をローディングに変更
+    setState(() {
+      _pageState = PageState.loading;
+    });
+
     // APIからユーザーデータを取得
     try {
       final dio = Dio();
@@ -172,6 +190,11 @@ class MyInformationPageState extends State<MyInformationPage> {
       print('❌ ユーザーデータの読み込みに失敗しました。: $e');
       _showMessage('ユーザーデータの読み込みに失敗しました。');
     }
+
+    // ページの状態を通常に戻す
+    setState(() {
+      _pageState = PageState.neutral;
+    });
   }
 
   // 各要素を表示するウィジェット
@@ -254,7 +277,16 @@ class MyInformationPageState extends State<MyInformationPage> {
               children: [
                 ...keys.keys.map(_buildElement),
                 SizedBox(height: 32),
-                ElevatedButton(onPressed: _save, child: Text('保存する')),
+                switch (_pageState) {
+                  PageState.loading => Center(
+                    child: loadingIndicator("読み込み中..."),
+                  ),
+                  PageState.saving => Center(child: loadingIndicator("保存中...")),
+                  PageState.neutral => ElevatedButton(
+                    onPressed: _save,
+                    child: Text('保存する'),
+                  ),
+                },
               ],
             ),
           ),
@@ -263,3 +295,7 @@ class MyInformationPageState extends State<MyInformationPage> {
     );
   }
 }
+
+// ====================================================
+// ページの状態管理
+enum PageState { neutral, loading, saving }

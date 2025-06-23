@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import '../services/analyze_image.dart';
+import '../widget/common_widgets.dart';
 
 class UploadImagePage extends StatefulWidget {
   const UploadImagePage({super.key});
@@ -17,7 +18,7 @@ class UploadImagePageState extends State<UploadImagePage> {
   File? _image;
   String? _imageUrl;
   Map<String, dynamic>? _analysisResult;
-  UploadState _uploadState = UploadState.idle;
+  PageState _pageState = PageState.idle;
   String _errorMessage = "";
 
   // 画像を選択するメソッド
@@ -29,13 +30,13 @@ class UploadImagePageState extends State<UploadImagePage> {
         _image = File(pickedFile.path);
         _imageUrl = null; // URLをリセット
         _analysisResult = null; // 分析結果をリセット
-        _uploadState = UploadState.imagePicked;
+        _pageState = PageState.imagePicked;
       });
     } catch (e) {
       print("❌ 画像の選択に失敗しました: $e");
       _errorMessage = e.toString();
       setState(() {
-        _uploadState = UploadState.imagePickFailed;
+        _pageState = PageState.imagePickFailed;
       });
     }
   }
@@ -66,20 +67,20 @@ class UploadImagePageState extends State<UploadImagePage> {
     // 画像のアップロード
     try {
       setState(() {
-        _uploadState = UploadState.uploading;
+        _pageState = PageState.uploading;
       });
       await imageRef.putFile(_image!);
       final downloadUrl = await imageRef.getDownloadURL();
       print("✅ アップロードが完了しました: $downloadUrl");
       setState(() {
         _imageUrl = downloadUrl;
-        _uploadState = UploadState.uploadComplete;
+        _pageState = PageState.uploadComplete;
       });
     } catch (e) {
       print("❌ アップロードに失敗しました: $e");
       _errorMessage = e.toString();
       setState(() {
-        _uploadState = UploadState.uploadFailed;
+        _pageState = PageState.uploadFailed;
       });
       return;
     }
@@ -87,7 +88,7 @@ class UploadImagePageState extends State<UploadImagePage> {
     // 画像分析を実行
     try {
       setState(() {
-        _uploadState = UploadState.analyzing;
+        _pageState = PageState.analyzing;
       });
       await Future.delayed(Duration(seconds: 1));
       _analysisResult = await analyzeImage(_imageUrl!);
@@ -95,13 +96,13 @@ class UploadImagePageState extends State<UploadImagePage> {
       // 分析結果を保存
       saveResult(_analysisResult!);
       setState(() {
-        _uploadState = UploadState.analysisComplete;
+        _pageState = PageState.analysisComplete;
       });
     } catch (e) {
       print("❌ 画像分析に失敗しました: $e");
       _errorMessage = e.toString();
       setState(() {
-        _uploadState = UploadState.analyzeFailed;
+        _pageState = PageState.analyzeFailed;
       });
     }
   }
@@ -171,36 +172,28 @@ class UploadImagePageState extends State<UploadImagePage> {
     );
   }
 
-  // ローディングインジケーター
-  Widget loadingIndicator(String message) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [CircularProgressIndicator(), Text(message)],
-    );
-  }
-
   // 詳細情報表示
   Widget detailInfo() {
-    switch (_uploadState) {
-      case UploadState.idle:
+    switch (_pageState) {
+      case PageState.idle:
         return Text("今日食べた料理の画像を選択しましょう！");
-      case UploadState.imagePicked:
+      case PageState.imagePicked:
         return Column(
           children: [Text("画像が選択されました。"), Text("アップロードして分析しましょう！")],
         );
-      case UploadState.imagePickFailed:
+      case PageState.imagePickFailed:
         return Text("画像の選択に失敗しました。 $_errorMessage");
-      case UploadState.uploading:
+      case PageState.uploading:
         return loadingIndicator("アップロード中...");
-      case UploadState.uploadFailed:
+      case PageState.uploadFailed:
         return Text("アップロードに失敗しました。 $_errorMessage");
-      case UploadState.uploadComplete:
+      case PageState.uploadComplete:
         return Column(children: [Text("アップロードに成功しました！"), Text("分析を開始します。")]);
-      case UploadState.analyzing:
+      case PageState.analyzing:
         return loadingIndicator("分析中...");
-      case UploadState.analyzeFailed:
+      case PageState.analyzeFailed:
         return Text("分析に失敗しました。 $_errorMessage");
-      case UploadState.analysisComplete:
+      case PageState.analysisComplete:
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -252,8 +245,8 @@ class UploadImagePageState extends State<UploadImagePage> {
 }
 
 // ====================================================
-// 状態管理
-enum UploadState {
+// ページの状態管理
+enum PageState {
   idle,
   imagePicked,
   imagePickFailed,
