@@ -1,9 +1,9 @@
 import 'dart:math';
-import 'package:dietitian/debug_print.dart';
+import 'package:dietitian/utils/debug_print.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'recources/daily_messages.dart';
+import '../recources/daily_messages.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
