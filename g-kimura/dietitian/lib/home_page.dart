@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:dietitian/debug_print.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -20,6 +21,7 @@ class HomePageState extends State<HomePage> {
     super.initState();
     _user = FirebaseAuth.instance.currentUser;
     _setDailyMessage(_user?.uid.hashCode);
+    loadIdToken();
   }
 
   void _setDailyMessage(int? seed) {

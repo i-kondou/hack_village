@@ -142,7 +142,6 @@ class MyInformationPageState extends State<MyInformationPage> {
           return;
         }
         if (widget.isFirstLogin) {
-          Navigator.pop(context);
           Navigator.pushReplacementNamed(context, '/homePage');
         }
       } else {
