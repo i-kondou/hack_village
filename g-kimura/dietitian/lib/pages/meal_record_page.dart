@@ -99,49 +99,99 @@ class MealRecordPageState extends State<MealRecordPage>
       return const Center(child: Text('グラフに表示するデータがありません'));
     }
 
-    final spots = <FlSpot>[];
+    // 表示対象とするキーを定義（ここでは数値データのみと仮定し、最初のデータから取得）
+    final keys = data.first.keys.where((k) => k != 'meal_number').toList();
+
+    // 栄養素ごとのスポットをMapに保存
+    final Map<String, List<FlSpot>> nutrientSpots = {
+      for (var key in keys) key: <FlSpot>[],
+    };
+
     for (int i = 0; i < data.length; i++) {
-      final calorieStr = data[i]['calorie'];
-      if (calorieStr != null) {
-        final calorie = double.tryParse(calorieStr);
-        if (calorie != null) {
-          spots.add(FlSpot(i.toDouble(), calorie));
+      for (final key in keys) {
+        final valueStr = data[i][key];
+        final value = double.tryParse(valueStr ?? '');
+        if (value != null) {
+          nutrientSpots[key]?.add(FlSpot(i.toDouble(), value));
         }
       }
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: LineChart(
-        LineChartData(
-          titlesData: FlTitlesData(
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: (value, meta) {
-                  final index = value.toInt();
-                  if (index >= 0 && index < data.length) {
-                    return Text(data[index]['meal_number'] ?? '');
-                  }
-                  return const Text('');
-                },
+    // 色リストを用意（栄養素数が多くても繰り返して対応）
+    final colors = [
+      Colors.red,
+      Colors.green,
+      Colors.orange,
+      Colors.blue,
+      Colors.purple,
+      Colors.teal,
+      Colors.brown,
+      Colors.pink,
+    ];
+
+    return Column(
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: LineChart(
+              LineChartData(
+                titlesData: FlTitlesData(
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (value, meta) {
+                        final index = value.toInt();
+                        if (index >= 0 && index < data.length) {
+                          return Text(data[index]['meal_number'] ?? '');
+                        }
+                        return const Text('');
+                      },
+                    ),
+                  ),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: true),
+                  ),
+                ),
+                lineBarsData:
+                    nutrientSpots.entries.mapIndexed((entry, i) {
+                      final key = entry.key;
+                      final spots = entry.value;
+                      return LineChartBarData(
+                        spots: spots,
+                        isCurved: true,
+                        color: colors[i % colors.length],
+                        barWidth: 2,
+                        dotData: FlDotData(show: false),
+                      );
+                    }).toList(),
+                gridData: FlGridData(show: true),
+                borderData: FlBorderData(show: true),
+                lineTouchData: LineTouchData(enabled: true),
               ),
             ),
-            leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true)),
           ),
-          lineBarsData: [
-            LineChartBarData(
-              spots: spots,
-              isCurved: true,
-              dotData: FlDotData(show: true),
-              barWidth: 3,
-              color: Colors.blue,
-            ),
-          ],
-          gridData: FlGridData(show: true),
-          borderData: FlBorderData(show: true),
         ),
-      ),
+        Wrap(
+          spacing: 8,
+          children:
+              nutrientSpots.keys.mapIndexed((name, i) {
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 12,
+                      height: 12,
+                      color: colors[i % colors.length],
+                    ),
+                    SizedBox(width: 4),
+                    Text(name),
+                  ],
+                );
+              }).toList(),
+        ),
+        SizedBox(height: 16),
+      ],
     );
   }
 
@@ -174,5 +224,12 @@ class MealRecordPageState extends State<MealRecordPage>
         },
       ),
     );
+  }
+}
+
+extension MapIndexed<E> on Iterable<E> {
+  Iterable<T> mapIndexed<T>(T Function(E e, int i) f) {
+    int i = 0;
+    return map((e) => f(e, i++));
   }
 }
