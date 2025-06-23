@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 import '../services/storage_helper.dart';
 
 class MealRecordPage extends StatefulWidget {
@@ -52,6 +53,7 @@ class MealRecordPageState extends State<MealRecordPage>
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Row(
                     children: [
+                      //食事番号、カロリーなど項目名(太字)
                       Expanded(
                         flex: 3,
                         child: Text(
@@ -62,6 +64,7 @@ class MealRecordPageState extends State<MealRecordPage>
                           ),
                         ),
                       ),
+                      //項目の値(通常フォント)
                       Expanded(
                         flex: 5,
                         child: Text(
@@ -92,8 +95,54 @@ class MealRecordPageState extends State<MealRecordPage>
   }
 
   Widget _buildGraphView(List<Map<String, String>> data) {
-    // グラフ表示部分はダミー
-    return Center(child: Text("📊 グラフ表示は未実装です"));
+    if (data.isEmpty) {
+      return const Center(child: Text('グラフに表示するデータがありません'));
+    }
+
+    final spots = <FlSpot>[];
+    for (int i = 0; i < data.length; i++) {
+      final calorieStr = data[i]['calorie'];
+      if (calorieStr != null) {
+        final calorie = double.tryParse(calorieStr);
+        if (calorie != null) {
+          spots.add(FlSpot(i.toDouble(), calorie));
+        }
+      }
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: LineChart(
+        LineChartData(
+          titlesData: FlTitlesData(
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: (value, meta) {
+                  final index = value.toInt();
+                  if (index >= 0 && index < data.length) {
+                    return Text(data[index]['meal_number'] ?? '');
+                  }
+                  return const Text('');
+                },
+              ),
+            ),
+            leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true)),
+          ),
+          lineBarsData: [
+            LineChartBarData(
+              spots: spots,
+              isCurved: true,
+              dotData: FlDotData(show: true),
+              barWidth: 3,
+              color: Colors.blue,
+            ),
+          ],
+          gridData: FlGridData(show: true),
+          borderData: FlBorderData(show: true),
+        ),
+      ),
+    );
   }
 
   @override
