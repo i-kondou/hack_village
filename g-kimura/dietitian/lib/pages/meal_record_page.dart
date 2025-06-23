@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../services/storage_helper.dart'; // loadDataが定義されているファイルをインポート
+import 'package:fl_chart/fl_chart.dart';
+import '../services/storage_helper.dart';
 
 class MealRecordPage extends StatefulWidget {
   const MealRecordPage({super.key});
@@ -8,13 +9,16 @@ class MealRecordPage extends StatefulWidget {
   MealRecordPageState createState() => MealRecordPageState();
 }
 
-class MealRecordPageState extends State<MealRecordPage> {
+class MealRecordPageState extends State<MealRecordPage>
+    with TickerProviderStateMixin {
   late Future<List<Map<String, String>>> _mealDataListFuture;
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
     _mealDataListFuture = _loadMealDataList();
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   Future<List<Map<String, String>>> _loadMealDataList() async {
@@ -34,15 +38,173 @@ class MealRecordPageState extends State<MealRecordPage> {
     return mealDataList;
   }
 
-  static Future<Map<String, String>?> loadData(String key) {
-    // ここでstorage_helper.dart内のloadData関数を呼び出す
-    return StorageHelper.loadMap(key);
+  // データをカード形式に変換するロジック
+  Card _getCardOfMeal(Map<String, String> data) {
+    // データをカード形式に変換するロジック
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children:
+              data.entries.map((e) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Row(
+                    children: [
+                      //食事番号、カロリーなど項目名(太字)
+                      Expanded(
+                        flex: 3,
+                        child: Text(
+                          e.key,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      //項目の値(通常フォント)
+                      Expanded(
+                        flex: 5,
+                        child: Text(
+                          e.value,
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildListView(List<Map<String, String>> data) {
+    return ListView(
+      padding: const EdgeInsets.all(16.0),
+      children: [
+        const Text(
+          '記録一覧',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        ...data.map(_getCardOfMeal),
+      ],
+    );
+  }
+
+  Widget _buildGraphView(List<Map<String, String>> data) {
+    if (data.isEmpty) {
+      return const Center(child: Text('グラフに表示するデータがありません'));
+    }
+
+    // 表示対象とするキーを定義（ここでは数値データのみと仮定し、最初のデータから取得）
+    final keys = data.first.keys.where((k) => k != 'meal_number').toList();
+
+    // 栄養素ごとのスポットをMapに保存
+    final Map<String, List<FlSpot>> nutrientSpots = {
+      for (var key in keys) key: <FlSpot>[],
+    };
+
+    for (int i = 0; i < data.length; i++) {
+      for (final key in keys) {
+        final valueStr = data[i][key];
+        final value = double.tryParse(valueStr ?? '');
+        if (value != null) {
+          nutrientSpots[key]?.add(FlSpot(i.toDouble(), value));
+        }
+      }
+    }
+
+    // 色リストを用意（栄養素数が多くても繰り返して対応）
+    final colors = [
+      Colors.red,
+      Colors.green,
+      Colors.orange,
+      Colors.blue,
+      Colors.purple,
+      Colors.teal,
+      Colors.brown,
+      Colors.pink,
+    ];
+
+    return Column(
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: LineChart(
+              LineChartData(
+                titlesData: FlTitlesData(
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (value, meta) {
+                        final index = value.toInt();
+                        if (index >= 0 && index < data.length) {
+                          return Text(data[index]['meal_number'] ?? '');
+                        }
+                        return const Text('');
+                      },
+                    ),
+                  ),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: true),
+                  ),
+                ),
+                lineBarsData:
+                    nutrientSpots.entries.mapIndexed((entry, i) {
+                      final key = entry.key;
+                      final spots = entry.value;
+                      return LineChartBarData(
+                        spots: spots,
+                        isCurved: true,
+                        color: colors[i % colors.length],
+                        barWidth: 2,
+                        dotData: FlDotData(show: false),
+                      );
+                    }).toList(),
+                gridData: FlGridData(show: true),
+                borderData: FlBorderData(show: true),
+                lineTouchData: LineTouchData(enabled: true),
+              ),
+            ),
+          ),
+        ),
+        Wrap(
+          spacing: 8,
+          children:
+              nutrientSpots.keys.mapIndexed((name, i) {
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 12,
+                      height: 12,
+                      color: colors[i % colors.length],
+                    ),
+                    SizedBox(width: 4),
+                    Text(name),
+                  ],
+                );
+              }).toList(),
+        ),
+        SizedBox(height: 16),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('食事記録')),
+      appBar: AppBar(
+        title: const Text('食事記録'),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: const [Tab(text: 'リスト'), Tab(text: 'グラフ')],
+        ),
+      ),
       body: FutureBuilder<List<Map<String, String>>>(
         future: _mealDataListFuture,
         builder: (context, snapshot) {
@@ -52,55 +214,9 @@ class MealRecordPageState extends State<MealRecordPage> {
             return Center(child: Text('エラー: ${snapshot.error}'));
           } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
             final data = snapshot.data!;
-            return ListView(
-              padding: const EdgeInsets.all(16.0),
-              children: [
-                const Text(
-                  '記録一覧',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 16),
-                ...data.map((entry) {
-                  return Card(
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children:
-                            entry.entries.map((e) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 4.0,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 3,
-                                      child: Text(
-                                        e.key,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 5,
-                                      child: Text(
-                                        e.value,
-                                        style: const TextStyle(fontSize: 16),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ],
+            return TabBarView(
+              controller: _tabController,
+              children: [_buildListView(data), _buildGraphView(data)],
             );
           } else {
             return const Center(child: Text('記録が見つかりません'));
@@ -108,5 +224,12 @@ class MealRecordPageState extends State<MealRecordPage> {
         },
       ),
     );
+  }
+}
+
+extension MapIndexed<E> on Iterable<E> {
+  Iterable<T> mapIndexed<T>(T Function(E e, int i) f) {
+    int i = 0;
+    return map((e) => f(e, i++));
   }
 }
