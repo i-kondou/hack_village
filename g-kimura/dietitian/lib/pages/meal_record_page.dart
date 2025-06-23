@@ -33,10 +33,46 @@ class MealRecordPageState extends State<MealRecordPage> {
     }
     return mealDataList;
   }
-
-  static Future<Map<String, String>?> loadData(String key) {
-    // ここでstorage_helper.dart内のloadData関数を呼び出す
-    return StorageHelper.loadMap(key);
+  
+  // データをカード形式に変換するロジック
+  Card _getCardOfMeal(Map<String, String> data) {
+    // データをカード形式に変換するロジック
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children:
+              data.entries.map((e) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: Text(
+                          e.key,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 5,
+                        child: Text(
+                          e.value,
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+        ),
+      ),
+    );
   }
 
   @override
@@ -59,47 +95,9 @@ class MealRecordPageState extends State<MealRecordPage> {
                   '記録一覧',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(height: 16),
                 ...data.map((entry) {
-                  return Card(
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children:
-                            entry.entries.map((e) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 4.0,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 3,
-                                      child: Text(
-                                        e.key,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 5,
-                                      child: Text(
-                                        e.value,
-                                        style: const TextStyle(fontSize: 16),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                      ),
-                    ),
-                  );
-                }).toList(),
+                  return _getCardOfMeal(entry);
+                }),
               ],
             );
           } else {
