@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
 void showSnackBarMessage(String message, BuildContext context, bool mounted) {
-  if (!mounted) {
-    print("ページがマウントされていません");
-    return;
-  }
+  if (!mounted) return;
   final messenger = ScaffoldMessenger.of(context);
   messenger.hideCurrentSnackBar();
   messenger.showSnackBar(

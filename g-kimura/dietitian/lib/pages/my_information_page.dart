@@ -136,10 +136,7 @@ class MyInformationPageState extends State<MyInformationPage> {
 
         // 最初の情報登録の場合はホームページへ遷移
         if (widget.isFirstLogin) {
-          if (!mounted) {
-            print("ページがマウントされていません");
-            return;
-          }
+          if (!mounted) return;
           Navigator.pushReplacementNamed(context, '/homePage');
         }
       } else {

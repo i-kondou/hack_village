@@ -63,10 +63,7 @@ class HomePageState extends State<HomePage> {
       if (shouldLogout == true) {
         await GoogleSignIn().signOut();
         await FirebaseAuth.instance.signOut();
-        if (!mounted) {
-          print("ページがマウントされていません");
-          return;
-        }
+        if (!mounted) return;
         Navigator.pushNamed(context, '/googleLoginPage');
       }
     });
@@ -89,7 +86,7 @@ class HomePageState extends State<HomePage> {
         children: [
           Container(
             decoration: backGroundBoxDecoration(),
-          ),
+            ),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
