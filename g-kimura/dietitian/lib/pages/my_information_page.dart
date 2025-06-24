@@ -1,3 +1,4 @@
+import 'package:dietitian/widget/common_themes.dart';
 import 'package:dietitian/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -38,6 +39,14 @@ class MyInformationPageState extends State<MyInformationPage> {
     'height': '身長 (cm)',
     'weight': '体重 (kg)',
   };
+  Map<String, IconData> icons = {
+    'name': Icons.person,
+    'age': Icons.calendar_today,
+    'sex': Icons.transgender,
+    'height': Icons.height,
+    'weight': Icons.scale,
+  };
+
   final Map<String, TextEditingController> _controllers = {};
   String _selectedGender = '未選択';
 
@@ -193,7 +202,10 @@ class MyInformationPageState extends State<MyInformationPage> {
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
         child: DropdownButtonFormField<String>(
           value: _selectedGender == '' ? '未選択' : _selectedGender,
-          decoration: InputDecoration(labelText: '性別'),
+          decoration: InputDecoration(
+            labelText: '性別',
+            icon: Icon(icons[label]),
+          ),
           items:
               ['未選択', '男性', '女性', 'その他']
                   .map(
@@ -215,7 +227,10 @@ class MyInformationPageState extends State<MyInformationPage> {
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
         child: TextField(
           controller: _controllers[label],
-          decoration: InputDecoration(labelText: keys[label]),
+          decoration: InputDecoration(
+            labelText: keys[label],
+            icon: Icon(icons[label]),
+          ),
           keyboardType:
               ['age', 'height', 'weight'].contains(label)
                   ? TextInputType.number
@@ -232,39 +247,55 @@ class MyInformationPageState extends State<MyInformationPage> {
       case PageStatus.saving:
         return Center(child: loadingIndicator("保存中..."));
       case PageStatus.neutral:
-        return ElevatedButton(onPressed: _save, child: Text('保存する'));
+        return ElevatedButton.icon(
+          onPressed: _save,
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          icon: Icon(Icons.save),
+          label: Text('保存する'),
+        );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: widget.isFirstLogin ? null : Text('マイ情報'),
-        automaticallyImplyLeading: widget.isFirstLogin == false,
-      ),
-      body: Column(
-        children: [
-          widget.isFirstLogin
-              ? Column(
-                children: [
-                  SizedBox(height: 30),
-                  largeBoldColoredText('はじめまして。', context),
-                  largeBoldColoredText('あなたのことを教えてください！', context),
-                ],
-              )
-              : SizedBox.shrink(),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                ...keys.keys.map(_userDataElement),
-                SizedBox(height: 32),
-                _saveSection(),
-              ],
-            ),
+    return Container(
+      decoration: backGroundBoxDecoration(),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: widget.isFirstLogin ? null : Text('マイ情報'),
+          automaticallyImplyLeading: widget.isFirstLogin == false,
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              widget.isFirstLogin
+                  ? Column(
+                    children: [
+                      SizedBox(height: 30),
+                      largeBoldColoredText('はじめまして。', context),
+                      largeBoldColoredText('あなたのことを教えてください！', context),
+                    ],
+                  )
+                  : SizedBox.shrink(),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    ...keys.keys.map(_userDataElement),
+                    SizedBox(height: 32),
+                    _saveSection(),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
