@@ -39,6 +39,14 @@ class MyInformationPageState extends State<MyInformationPage> {
     'height': '身長 (cm)',
     'weight': '体重 (kg)',
   };
+  Map<String, IconData> icons = {
+    'name': Icons.person,
+    'age': Icons.calendar_today,
+    'sex': Icons.transgender,
+    'height': Icons.height,
+    'weight': Icons.scale,
+  };
+
   final Map<String, TextEditingController> _controllers = {};
   String _selectedGender = '未選択';
 
@@ -194,7 +202,10 @@ class MyInformationPageState extends State<MyInformationPage> {
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
         child: DropdownButtonFormField<String>(
           value: _selectedGender == '' ? '未選択' : _selectedGender,
-          decoration: InputDecoration(labelText: '性別'),
+          decoration: InputDecoration(
+            labelText: '性別',
+            icon: Icon(icons[label]),
+          ),
           items:
               ['未選択', '男性', '女性', 'その他']
                   .map(
@@ -216,7 +227,10 @@ class MyInformationPageState extends State<MyInformationPage> {
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
         child: TextField(
           controller: _controllers[label],
-          decoration: InputDecoration(labelText: keys[label]),
+          decoration: InputDecoration(
+            labelText: keys[label],
+            icon: Icon(icons[label]),
+          ),
           keyboardType:
               ['age', 'height', 'weight'].contains(label)
                   ? TextInputType.number
@@ -233,7 +247,7 @@ class MyInformationPageState extends State<MyInformationPage> {
       case PageStatus.saving:
         return Center(child: loadingIndicator("保存中..."));
       case PageStatus.neutral:
-        return ElevatedButton(
+        return ElevatedButton.icon(
           onPressed: _save,
           style: ElevatedButton.styleFrom(
             padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
@@ -241,7 +255,8 @@ class MyInformationPageState extends State<MyInformationPage> {
               borderRadius: BorderRadius.circular(12),
             ),
           ),
-          child: Text('保存する'),
+          icon: Icon(Icons.save),
+          label: Text('保存する'),
         );
     }
   }
