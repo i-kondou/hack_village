@@ -84,9 +84,7 @@ class HomePageState extends State<HomePage> {
       ),
       body: Stack(
         children: [
-          Container(
-            decoration: backGroundBoxDecoration(),
-            ),
+          Container(decoration: backGroundBoxDecoration()),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -160,7 +158,7 @@ class HomePageState extends State<HomePage> {
       onTap: onTap ?? () => Navigator.pushNamed(context, routeName!),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.9),
+          color: Colors.white.withValues(alpha: 0.9),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
