@@ -17,3 +17,14 @@ Widget loadingIndicator(String message) {
     ],
   );
 }
+
+Widget largeBoldColoredText(String text, BuildContext context) {
+  return Text(
+    text,
+    style: TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 18,
+      color: Theme.of(context).primaryColor,
+    ),
+  );
+}
