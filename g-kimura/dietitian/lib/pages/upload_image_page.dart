@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:dietitian/services/storage_helper.dart';
+import 'package:dietitian/widget/common_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -102,29 +103,34 @@ class UploadImagePageState extends State<UploadImagePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("画像アップロード")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _image != null
-                ? Image.file(_image!, height: 200)
-                : Text("画像が選択されていません"),
-            SizedBox(height: 20),
-            Column(
+      body: Stack(
+        children: [
+          Container(decoration: backGroundBoxDecoration()),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [selectCameraButton(), selectAlbumButton()],
+                _image != null
+                    ? Image.file(_image!, height: 200)
+                    : Text("画像が選択されていません"),
+                SizedBox(height: 20),
+                Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [selectCameraButton(), selectAlbumButton()],
+                    ),
+                  ],
                 ),
+                SizedBox(height: 20),
+                uploadButton(),
+                SizedBox(height: 20),
+                detailInfo(),
               ],
             ),
-            SizedBox(height: 20),
-            uploadButton(),
-            SizedBox(height: 20),
-            detailInfo(),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
