@@ -2,6 +2,7 @@ import 'package:dietitian/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../utils/show_message.dart';
 
 class MyInformationPage extends StatefulWidget {
   final bool isFirstLogin;
@@ -12,7 +13,13 @@ class MyInformationPage extends StatefulWidget {
 }
 
 class MyInformationPageState extends State<MyInformationPage> {
-  PageState _pageState = PageState.neutral;
+  PageStatus _pageStatus = PageStatus.neutral;
+  void setPageStatus(PageStatus status) {
+    setState(() {
+      _pageStatus = status;
+    });
+    print('ページの状態が $status に設定されました。');
+  }
 
   // ユーザー情報
   Map<String, dynamic> userData = {
@@ -43,7 +50,9 @@ class MyInformationPageState extends State<MyInformationPage> {
         _controllers[key] = TextEditingController();
       }
     }
-    _load();
+    if (!widget.isFirstLogin) {
+      _load();
+    }
   }
 
   // 各コントローラーを破棄
@@ -55,35 +64,22 @@ class MyInformationPageState extends State<MyInformationPage> {
     super.dispose();
   }
 
-  // メッセージの表示
-  void _showMessage(String message) {
-    if (!mounted) {
-      print("ページがマウントされていません");
-      return;
-    }
-    final messenger = ScaffoldMessenger.of(context);
-    messenger.hideCurrentSnackBar(); // 現在のSnackBarを即座に消す
-    messenger.showSnackBar(
-      SnackBar(content: Text(message), duration: Duration(seconds: 2)),
-    );
-  }
-
   // 全ての情報が入力されているかチェック
   bool _isFormValid() {
     if (userData["name"] == null || userData["name"] == "") {
-      _showMessage('名前を入力してください。');
+      showSnackBarMessage('名前を入力してください。', context, mounted);
       return false;
     } else if (userData["age"] == null || userData["age"] <= 0) {
-      _showMessage('年齢を正しく入力してください。');
+      showSnackBarMessage('年齢を正しく入力してください。', context, mounted);
       return false;
     } else if (userData["height"] == null || userData["height"] <= 0) {
-      _showMessage('身長を正しく入力してください。');
+      showSnackBarMessage('身長を正しく入力してください。', context, mounted);
       return false;
     } else if (userData["weight"] == null || userData["weight"] <= 0) {
-      _showMessage('体重を正しく入力してください。');
+      showSnackBarMessage('体重を正しく入力してください。', context, mounted);
       return false;
     } else if (userData["sex"] == null || userData["sex"] == "") {
-      _showMessage('性別を選択してください。');
+      showSnackBarMessage('性別を選択してください。', context, mounted);
       return false;
     }
     return true;
@@ -92,9 +88,7 @@ class MyInformationPageState extends State<MyInformationPage> {
   // データの保存処理
   void _save() async {
     // ページの状態を保存中に変更
-    setState(() {
-      _pageState = PageState.saving;
-    });
+    setPageStatus(PageStatus.saving);
 
     // １．入力データを反映、チェック
     userData["name"] = _controllers["name"]?.text ?? "";
@@ -106,6 +100,7 @@ class MyInformationPageState extends State<MyInformationPage> {
     userData["sex"] = _selectedGender == '未選択' ? null : _selectedGender;
     if (!_isFormValid()) {
       print('❌ 入力内容に不備があります。');
+      setPageStatus(PageStatus.neutral);
       return;
     }
 
@@ -128,7 +123,7 @@ class MyInformationPageState extends State<MyInformationPage> {
       // ３．リスポンスの確認
       if (response.statusCode == 204) {
         print('✅ ユーザー情報登録に成功しました: ${response.data}');
-        _showMessage('保存しました。');
+        showSnackBarMessage('保存しました。', context, mounted);
 
         // 最初の情報登録の場合はホームページへ遷移
         if (widget.isFirstLogin) {
@@ -140,25 +135,21 @@ class MyInformationPageState extends State<MyInformationPage> {
         }
       } else {
         print('❌ ユーザー情報登録に失敗しました: ${response.data}');
-        _showMessage('保存に失敗しました。もう一度お試しください。');
+        showSnackBarMessage('保存に失敗しました。もう一度お試しください。', context, mounted);
       }
     } catch (e) {
       print('❌ ユーザー情報登録に失敗しました: $e');
-      _showMessage('保存に失敗しました。もう一度お試しください。');
+      showSnackBarMessage('保存に失敗しました。もう一度お試しください。', context, mounted);
     }
 
     // ページの状態を通常に戻す
-    setState(() {
-      _pageState = PageState.neutral;
-    });
+    setPageStatus(PageStatus.neutral);
   }
 
   // データの読み込み処理
   void _load() async {
     // ページの状態をローディングに変更
-    setState(() {
-      _pageState = PageState.loading;
-    });
+    setPageStatus(PageStatus.loading);
 
     // APIからユーザーデータを取得
     try {
@@ -188,17 +179,15 @@ class MyInformationPageState extends State<MyInformationPage> {
       }
     } catch (e) {
       print('❌ ユーザーデータの読み込みに失敗しました。: $e');
-      _showMessage('ユーザーデータの読み込みに失敗しました。');
+      showSnackBarMessage('ユーザーデータの読み込みに失敗しました。', context, mounted);
     }
 
     // ページの状態を通常に戻す
-    setState(() {
-      _pageState = PageState.neutral;
-    });
+    setPageStatus(PageStatus.neutral);
   }
 
   // 各要素を表示するウィジェット
-  Widget _buildElement(String label) {
+  Widget _userDataElement(String label) {
     if (label == 'sex') {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
@@ -236,16 +225,15 @@ class MyInformationPageState extends State<MyInformationPage> {
     }
   }
 
-  // 大き目のテキストを表示するウィジェット
-  Widget _buildTextField(String text) {
-    return Text(
-      text,
-      style: TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: 18,
-        color: Theme.of(context).primaryColor,
-      ),
-    );
+  Widget _saveSection() {
+    switch (_pageStatus) {
+      case PageStatus.loading:
+        return Center(child: loadingIndicator("読み込み中..."));
+      case PageStatus.saving:
+        return Center(child: loadingIndicator("保存中..."));
+      case PageStatus.neutral:
+        return ElevatedButton(onPressed: _save, child: Text('保存する'));
+    }
   }
 
   @override
@@ -261,32 +249,18 @@ class MyInformationPageState extends State<MyInformationPage> {
               ? Column(
                 children: [
                   SizedBox(height: 30),
-                  _buildTextField('こんにちは、'),
-                  _buildTextField(
-                    FirebaseAuth.instance.currentUser != null
-                        ? '${FirebaseAuth.instance.currentUser!.displayName} さん'
-                        : 'ユーザーID: ${FirebaseAuth.instance.currentUser!.uid}',
-                  ),
-                  _buildTextField('あなたのことを教えてください！'),
+                  largeBoldColoredText('はじめまして。', context),
+                  largeBoldColoredText('あなたのことを教えてください！', context),
                 ],
               )
-              : SizedBox.shrink(), // 表示しない場合の代替ウィジェット
+              : SizedBox.shrink(),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                ...keys.keys.map(_buildElement),
+                ...keys.keys.map(_userDataElement),
                 SizedBox(height: 32),
-                switch (_pageState) {
-                  PageState.loading => Center(
-                    child: loadingIndicator("読み込み中..."),
-                  ),
-                  PageState.saving => Center(child: loadingIndicator("保存中...")),
-                  PageState.neutral => ElevatedButton(
-                    onPressed: _save,
-                    child: Text('保存する'),
-                  ),
-                },
+                _saveSection(),
               ],
             ),
           ),
@@ -298,4 +272,4 @@ class MyInformationPageState extends State<MyInformationPage> {
 
 // ====================================================
 // ページの状態管理
-enum PageState { neutral, loading, saving }
+enum PageStatus { neutral, loading, saving }
