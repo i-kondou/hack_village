@@ -18,8 +18,13 @@ class UploadImagePageState extends State<UploadImagePage> {
   File? _image;
   String? _imageUrl;
   Map<String, dynamic>? _analysisResult;
-  PageState _pageState = PageState.idle;
+  PageStatus _pageStatus = PageStatus.idle;
   String _errorMessage = "";
+  setPageStatus(PageStatus status) {
+    setState(() {
+      _pageStatus = status;
+    });
+  }
 
   // 画像を選択するメソッド
   Future<void> _pickImage(ImageSource source) async {
@@ -30,14 +35,12 @@ class UploadImagePageState extends State<UploadImagePage> {
         _image = File(pickedFile.path);
         _imageUrl = null; // URLをリセット
         _analysisResult = null; // 分析結果をリセット
-        _pageState = PageState.imagePicked;
+        _pageStatus = PageStatus.imagePicked;
       });
     } catch (e) {
       print("❌ 画像の選択に失敗しました: $e");
       _errorMessage = e.toString();
-      setState(() {
-        _pageState = PageState.imagePickFailed;
-      });
+      setPageStatus(PageStatus.imagePickFailed);
     }
   }
 
@@ -66,44 +69,32 @@ class UploadImagePageState extends State<UploadImagePage> {
 
     // 画像のアップロード
     try {
-      setState(() {
-        _pageState = PageState.uploading;
-      });
+      setPageStatus(PageStatus.uploading);
       await imageRef.putFile(_image!);
       final downloadUrl = await imageRef.getDownloadURL();
       print("✅ アップロードが完了しました: $downloadUrl");
-      setState(() {
-        _imageUrl = downloadUrl;
-        _pageState = PageState.uploadComplete;
-      });
+      setPageStatus(PageStatus.uploadComplete);
+      _imageUrl = downloadUrl;
     } catch (e) {
       print("❌ アップロードに失敗しました: $e");
       _errorMessage = e.toString();
-      setState(() {
-        _pageState = PageState.uploadFailed;
-      });
+      setPageStatus(PageStatus.uploadFailed);
       return;
     }
 
     // 画像分析を実行
     try {
-      setState(() {
-        _pageState = PageState.analyzing;
-      });
+      setPageStatus(PageStatus.analyzing);
       await Future.delayed(Duration(seconds: 1));
       _analysisResult = await analyzeImage(_imageUrl!);
       print("✅ 分析結果: $_analysisResult");
       // 分析結果を保存
       saveResult(_analysisResult!);
-      setState(() {
-        _pageState = PageState.analysisComplete;
-      });
+      setPageStatus(PageStatus.analysisComplete);
     } catch (e) {
       print("❌ 画像分析に失敗しました: $e");
       _errorMessage = e.toString();
-      setState(() {
-        _pageState = PageState.analyzeFailed;
-      });
+      setPageStatus(PageStatus.analyzeFailed);
     }
   }
 
@@ -174,26 +165,26 @@ class UploadImagePageState extends State<UploadImagePage> {
 
   // 詳細情報表示
   Widget detailInfo() {
-    switch (_pageState) {
-      case PageState.idle:
+    switch (_pageStatus) {
+      case PageStatus.idle:
         return Text("今日食べた料理の画像を選択しましょう！");
-      case PageState.imagePicked:
+      case PageStatus.imagePicked:
         return Column(
           children: [Text("画像が選択されました。"), Text("アップロードして分析しましょう！")],
         );
-      case PageState.imagePickFailed:
+      case PageStatus.imagePickFailed:
         return Text("画像の選択に失敗しました。 $_errorMessage");
-      case PageState.uploading:
+      case PageStatus.uploading:
         return loadingIndicator("アップロード中...");
-      case PageState.uploadFailed:
+      case PageStatus.uploadFailed:
         return Text("アップロードに失敗しました。 $_errorMessage");
-      case PageState.uploadComplete:
+      case PageStatus.uploadComplete:
         return Column(children: [Text("アップロードに成功しました！"), Text("分析を開始します。")]);
-      case PageState.analyzing:
+      case PageStatus.analyzing:
         return loadingIndicator("分析中...");
-      case PageState.analyzeFailed:
+      case PageStatus.analyzeFailed:
         return Text("分析に失敗しました。 $_errorMessage");
-      case PageState.analysisComplete:
+      case PageStatus.analysisComplete:
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -246,7 +237,7 @@ class UploadImagePageState extends State<UploadImagePage> {
 
 // ====================================================
 // ページの状態管理
-enum PageState {
+enum PageStatus {
   idle,
   imagePicked,
   imagePickFailed,
