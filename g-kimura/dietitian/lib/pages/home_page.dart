@@ -77,62 +77,115 @@ class HomePageState extends State<HomePage> {
     final uid = _user?.uid;
 
     return Scaffold(
-      appBar: AppBar(title: Text('ホーム')),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text('ホーム', style: TextStyle(color: Colors.white)),
+        centerTitle: true,
+      ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.teal.shade300, Colors.teal.shade700],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+          ),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundImage: AssetImage('assets/images/icon1.png'),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    displayName != null
+                        ? 'こんにちは、$displayName さん'
+                        : 'ユーザーID: $uid',
+                    style: const TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    _dailyMessage,
+                    style: TextStyle(fontSize: 16, color: Colors.yellow[100]),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 32),
+                  Expanded(
+                    child: GridView.count(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                      children: [
+                        _buildCardButton(
+                          Icons.image,
+                          '画像アップロード',
+                          '/uploadImagePage',
+                        ),
+                        _buildCardButton(
+                          Icons.person,
+                          'マイ情報',
+                          '/myInformationPage',
+                        ),
+                        _buildCardButton(
+                          Icons.restaurant,
+                          '食事記録',
+                          '/mealRecordPage',
+                        ),
+                        _buildCardButton(
+                          Icons.logout,
+                          'ログアウト',
+                          null,
+                          onTap: _onLogoutButtonPressed,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCardButton(
+    IconData icon,
+    String label,
+    String? routeName, {
+    VoidCallback? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap ?? () => Navigator.pushNamed(context, routeName!),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.9),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 8,
+              offset: Offset(2, 4),
+            ),
+          ],
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // 画面幅に合わせて画像サイズを調整
-            LayoutBuilder(
-              builder: (context, constraints) {
-                return Image.asset(
-                  'assets/images/kano-eiyo.png',
-                  fit: BoxFit.contain,
-                );
-              },
-            ),
-            const SizedBox(height: 10),
+            Icon(icon, size: 40, color: Colors.teal),
+            const SizedBox(height: 8),
             Text(
-              displayName != null ? 'こんにちは、$displayName さん' : 'ユーザーID: $uid',
-              style: const TextStyle(fontSize: 18),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              _dailyMessage,
-              style: TextStyle(fontSize: 16, color: Colors.green[700]),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            ...[
-              ElevatedButton(
-                child: const Text('画像をアップロード'),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/uploadImagePage');
-                },
-              ),
-              ElevatedButton(
-                child: const Text('マイ情報'),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/myInformationPage');
-                },
-              ),
-              ElevatedButton(
-                child: const Text('食事記録'),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/mealRecordPage');
-                },
-              ),
-              ElevatedButton(
-                onPressed: _onLogoutButtonPressed,
-                child: const Text('ログアウト'),
-              ),
-            ].map(
-              (btn) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6),
-                child: btn,
-              ),
+              label,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             ),
           ],
         ),
