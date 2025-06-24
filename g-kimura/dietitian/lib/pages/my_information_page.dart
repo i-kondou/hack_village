@@ -250,17 +250,29 @@ class MyInformationPageState extends State<MyInformationPage> {
 
   @override
   Widget build(BuildContext context) {
+    // リッチUI用のFlutterコード（MyInformationPage）
+    // グラデーション背景 + カード形式の入力 + 見栄え改善
     return Scaffold(
       appBar: AppBar(
-        title: widget.isFirstLogin ? null : Text('マイ情報'),
+        title: widget.isFirstLogin ? null : const Text('マイ情報'),
         automaticallyImplyLeading: widget.isFirstLogin == false,
+        backgroundColor: Colors.teal,
+        elevation: 0,
       ),
-      body: Column(
-        children: [
-          widget.isFirstLogin
-              ? Column(
-                children: [
-                  SizedBox(height: 30),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.teal, Colors.white],
+          ),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                if (widget.isFirstLogin) ...[
+                  const SizedBox(height: 30),
                   _buildTextField('こんにちは、'),
                   _buildTextField(
                     FirebaseAuth.instance.currentUser != null
@@ -268,29 +280,54 @@ class MyInformationPageState extends State<MyInformationPage> {
                         : 'ユーザーID: ${FirebaseAuth.instance.currentUser!.uid}',
                   ),
                   _buildTextField('あなたのことを教えてください！'),
+                  const SizedBox(height: 20),
                 ],
-              )
-              : SizedBox.shrink(), // 表示しない場合の代替ウィジェット
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                ...keys.keys.map(_buildElement),
-                SizedBox(height: 32),
-                switch (_pageState) {
-                  PageState.loading => Center(
-                    child: loadingIndicator("読み込み中..."),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    elevation: 8,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 24,
+                        horizontal: 16,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          ...keys.keys.map((key) => _buildElement(key)),
+                          const SizedBox(height: 32),
+                          switch (_pageState) {
+                            PageState.loading => loadingIndicator("読み込み中..."),
+                            PageState.saving => loadingIndicator("保存中..."),
+                            PageState.neutral => ElevatedButton.icon(
+                              onPressed: _save,
+                              icon: const Icon(Icons.save),
+                              label: const Text('保存する'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.teal,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
+                                textStyle: const TextStyle(fontSize: 16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                          },
+                        ],
+                      ),
+                    ),
                   ),
-                  PageState.saving => Center(child: loadingIndicator("保存中...")),
-                  PageState.neutral => ElevatedButton(
-                    onPressed: _save,
-                    child: Text('保存する'),
-                  ),
-                },
+                ),
               ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
