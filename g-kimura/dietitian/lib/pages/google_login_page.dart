@@ -77,10 +77,7 @@ class GoogleLoginPageState extends State<GoogleLoginPage> {
       // 5. ページ移動
       // 　すでにユーザデータがある場合はホームページへ遷移
       // 　ない場合はマイ情報登録ページへ遷移
-      if (!mounted) {
-        print("ページがマウントされていません");
-        return;
-      }
+      if (!mounted) return;
       if (isRegistered) {
         Navigator.pushReplacement(
           context,

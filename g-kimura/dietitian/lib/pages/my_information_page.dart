@@ -130,16 +130,13 @@ class MyInformationPageState extends State<MyInformationPage> {
       );
 
       // ３．リスポンスの確認
+      if (!mounted) return;
       if (response.statusCode == 204) {
         print('✅ ユーザー情報登録に成功しました: ${response.data}');
         showSnackBarMessage('保存しました。', context, mounted);
 
         // 最初の情報登録の場合はホームページへ遷移
         if (widget.isFirstLogin) {
-          if (!mounted) {
-            print("ページがマウントされていません");
-            return;
-          }
           Navigator.pushReplacementNamed(context, '/homePage');
         }
       } else {
@@ -172,6 +169,7 @@ class MyInformationPageState extends State<MyInformationPage> {
         ),
       );
       // データを画面に移す
+      if (!mounted) return;
       if (response.data != null) {
         userData = response.data;
         print('✅ ユーザーデータの読み込みに成功しました: $userData');
