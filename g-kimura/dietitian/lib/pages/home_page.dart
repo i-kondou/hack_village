@@ -78,47 +78,61 @@ class HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(title: Text('ホーム')),
-      body: Center(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/images/kano-eiyo.png'),
-            SizedBox(height: 10),
+            // 画面幅に合わせて画像サイズを調整
+            LayoutBuilder(
+              builder: (context, constraints) {
+                return Image.asset(
+                  'assets/images/kano-eiyo.png',
+                  fit: BoxFit.contain,
+                );
+              },
+            ),
+            const SizedBox(height: 10),
             Text(
               displayName != null ? 'こんにちは、$displayName さん' : 'ユーザーID: $uid',
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
+              textAlign: TextAlign.center,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               _dailyMessage,
               style: TextStyle(fontSize: 16, color: Colors.green[700]),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              child: Text('画像をアップロード'),
-              onPressed: () {
-                Navigator.pushNamed(context, '/uploadImagePage');
-              },
-            ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              child: Text('マイ情報'),
-              onPressed: () {
-                Navigator.pushNamed(context, '/myInformationPage');
-              },
-            ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              child: Text('食事記録'),
-              onPressed: () {
-                Navigator.pushNamed(context, '/mealRecordPage');
-              },
-            ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: _onLogoutButtonPressed,
-              child: Text('ログアウト'),
+            const SizedBox(height: 20),
+            ...[
+              ElevatedButton(
+                child: const Text('画像をアップロード'),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/uploadImagePage');
+                },
+              ),
+              ElevatedButton(
+                child: const Text('マイ情報'),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/myInformationPage');
+                },
+              ),
+              ElevatedButton(
+                child: const Text('食事記録'),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/mealRecordPage');
+                },
+              ),
+              ElevatedButton(
+                onPressed: _onLogoutButtonPressed,
+                child: const Text('ログアウト'),
+              ),
+            ].map(
+              (btn) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: btn,
+              ),
             ),
           ],
         ),
