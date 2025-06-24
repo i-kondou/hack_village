@@ -1,3 +1,4 @@
+import 'package:dietitian/widget/common_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../services/storage_helper.dart';
@@ -147,6 +148,7 @@ class MealRecordPageState extends State<MealRecordPage>
             padding: const EdgeInsets.all(16.0),
             child: LineChart(
               LineChartData(
+                backgroundColor: Colors.white,
                 titlesData: FlTitlesData(
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
@@ -212,26 +214,48 @@ class MealRecordPageState extends State<MealRecordPage>
         title: const Text('食事記録'),
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [Tab(text: 'リスト'), Tab(text: 'グラフ')],
+          tabs: const [
+            Tab(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [Icon(Icons.list), SizedBox(width: 8), Text('リスト')],
+              ),
+            ),
+            Tab(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.bar_chart),
+                  SizedBox(width: 8),
+                  Text('グラフ'),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
-      body: FutureBuilder<List<Map<String, String>>>(
-        future: _mealDataListFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('エラー: ${snapshot.error}'));
-          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            final data = snapshot.data!;
-            return TabBarView(
-              controller: _tabController,
-              children: [_buildListView(data), _buildGraphView(data)],
-            );
-          } else {
-            return const Center(child: Text('記録が見つかりません'));
-          }
-        },
+      body: Stack(
+        children: [
+          Container(decoration: backGroundBoxDecoration()),
+          FutureBuilder<List<Map<String, String>>>(
+            future: _mealDataListFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('エラー: ${snapshot.error}'));
+              } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                final data = snapshot.data!;
+                return TabBarView(
+                  controller: _tabController,
+                  children: [_buildListView(data), _buildGraphView(data)],
+                );
+              } else {
+                return const Center(child: Text('記録が見つかりません'));
+              }
+            },
+          ),
+        ],
       ),
     );
   }
