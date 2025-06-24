@@ -1,3 +1,4 @@
+import 'package:dietitian/widget/common_themes.dart';
 import 'package:dietitian/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -232,39 +233,54 @@ class MyInformationPageState extends State<MyInformationPage> {
       case PageStatus.saving:
         return Center(child: loadingIndicator("保存中..."));
       case PageStatus.neutral:
-        return ElevatedButton(onPressed: _save, child: Text('保存する'));
+        return ElevatedButton(
+          onPressed: _save,
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          child: Text('保存する'),
+        );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: widget.isFirstLogin ? null : Text('マイ情報'),
-        automaticallyImplyLeading: widget.isFirstLogin == false,
-      ),
-      body: Column(
-        children: [
-          widget.isFirstLogin
-              ? Column(
-                children: [
-                  SizedBox(height: 30),
-                  largeBoldColoredText('はじめまして。', context),
-                  largeBoldColoredText('あなたのことを教えてください！', context),
-                ],
-              )
-              : SizedBox.shrink(),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                ...keys.keys.map(_userDataElement),
-                SizedBox(height: 32),
-                _saveSection(),
-              ],
-            ),
+    return Container(
+      decoration: backGroundBoxDecoration(),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: widget.isFirstLogin ? null : Text('マイ情報'),
+          automaticallyImplyLeading: widget.isFirstLogin == false,
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              widget.isFirstLogin
+                  ? Column(
+                    children: [
+                      SizedBox(height: 30),
+                      largeBoldColoredText('はじめまして。', context),
+                      largeBoldColoredText('あなたのことを教えてください！', context),
+                    ],
+                  )
+                  : SizedBox.shrink(),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    ...keys.keys.map(_userDataElement),
+                    SizedBox(height: 32),
+                    _saveSection(),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

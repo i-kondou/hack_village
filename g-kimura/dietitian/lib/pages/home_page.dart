@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:dietitian/utils/debug_print.dart';
+import 'package:dietitian/widget/common_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -87,13 +88,7 @@ class HomePageState extends State<HomePage> {
       body: Stack(
         children: [
           Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.teal.shade300, Colors.teal.shade700],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
+            decoration: backGroundBoxDecoration(),
           ),
           SafeArea(
             child: Padding(
