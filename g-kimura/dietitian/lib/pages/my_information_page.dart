@@ -238,14 +238,10 @@ class MyInformationPageState extends State<MyInformationPage> {
 
   @override
   Widget build(BuildContext context) {
-    // リッチUI用のFlutterコード（MyInformationPage）
-    // グラデーション背景 + カード形式の入力 + 見栄え改善
     return Scaffold(
       appBar: AppBar(
-        title: widget.isFirstLogin ? null : const Text('マイ情報'),
+        title: widget.isFirstLogin ? null : Text('マイ情報'),
         automaticallyImplyLeading: widget.isFirstLogin == false,
-        backgroundColor: Colors.teal,
-        elevation: 0,
       ),
       body: Column(
         children: [
