@@ -116,6 +116,7 @@ class GoogleLoginPageState extends State<GoogleLoginPage> {
             SizedBox(height: 20),
             customCardButton(
               Icons.login,
+              //ボタンの大きさに余裕を持たせるため、文字列をスペースで囲む。
               '  Googleでログイン  ',
               null,
               context,

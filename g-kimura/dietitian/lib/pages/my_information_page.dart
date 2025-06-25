@@ -185,8 +185,9 @@ class MyInformationPageState extends State<MyInformationPage> {
         setState(() {}); // UIを更新
       }
     } catch (e) {
-      print('❌ ユーザーデータの読み込みに失敗しました。: $e');
-      showSnackBarMessage('ユーザーデータの読み込みに失敗しました。', context, mounted);
+      //データの読み取りに失敗した場合と、データが元からなかった場合が考えられる。
+      print('❌ ユーザーデータの読み込みに失敗しました。またはデータが空です。: $e');
+      showSnackBarMessage('ユーザーデータを登録してください。', context, mounted);
     }
 
     // ページの状態を通常に戻す
