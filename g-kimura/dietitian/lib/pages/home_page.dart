@@ -1,12 +1,14 @@
 import 'dart:math';
 import 'package:dietitian/services/storage_helper.dart';
 import 'package:dietitian/utils/debug_print.dart';
+import 'package:dietitian/utils/is_all_data_valid.dart';
 import 'package:dietitian/widget/common_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../recources/daily_messages.dart';
 import '../widget/common_widgets.dart';
+import 'package:dio/dio.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -77,9 +79,28 @@ class HomePageState extends State<HomePage> {
     });
   }
 
+  Future<Map<String, dynamic>> requestReadAPI() async {
+    final dio = Dio();
+    final token = await FirebaseAuth.instance.currentUser?.getIdToken();
+    final response = await dio.get(
+      'https://dietitian-backend--feat-919605860399.us-central1.run.app/user/read',
+      options: Options(
+        contentType: 'application/json',
+        headers: {"Authorization": 'Bearer ${token ?? ''}'},
+      ),
+    );
+    if (response.data != null) {
+      return response.data;
+    } else {
+      throw Exception('ユーザーデータの読み込みに失敗: ${response.statusCode}');
+    }
+  }
+
   Future<void> _checkUserData() async {
     // ユーザーデータが保存されていない場合、マイ情報ページへ遷移
-    if (await StorageHelper.loadString('userdata_saved', 'false') != 'true') {
+    final userData = await requestReadAPI();
+    print('ユーザーデータ: $userData');
+    if (!isAllDataValid(userData, context, mounted)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.pushNamed(context, '/myInformationPage', arguments: true);
       });
