@@ -237,8 +237,11 @@ class MyInformationPageState extends State<MyInformationPage> {
                   ? Column(
                     children: [
                       SizedBox(height: 30),
-                      customLargeBoldColoredText('はじめまして。', context),
-                      customLargeBoldColoredText('あなたのことを教えてください！', context),
+                      customLargeBoldColoredTextArea('はじめまして。', context),
+                      customLargeBoldColoredTextArea(
+                        'あなたのことを教えてください！',
+                        context,
+                      ),
                     ],
                   )
                   : SizedBox.shrink(),
