@@ -1,3 +1,4 @@
+import 'package:dietitian/services/storage_helper.dart';
 import 'package:dietitian/widget/common_themes.dart';
 import 'package:dietitian/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
@@ -135,6 +136,8 @@ class MyInformationPageState extends State<MyInformationPage> {
       print('✅ ユーザー情報登録に成功しました: ${userData}');
       if (!mounted) return;
       showSnackBarMessage('保存しました。', context, mounted);
+      //本体に「ユーザーデータが保存されていること」を保存する
+      StorageHelper.saveString('userdata_saved', 'true');  
       if (widget.isFirstLogin) {
         Navigator.pushReplacementNamed(context, '/homePage');
       }
@@ -155,8 +158,9 @@ class MyInformationPageState extends State<MyInformationPage> {
       print('✅ ユーザーデータの読み込みに成功しました: $response');
       userData = response;
     } catch (e) {
-      print('❌ ユーザーデータの読み込みに失敗しました。: $e');
-      showSnackBarMessage('ユーザーデータの読み込みに失敗しました。', context, mounted);
+      //データの読み取りに失敗した場合と、データが元からなかった場合が考えられる。
+      print('❌ ユーザーデータの読み込みに失敗しました。またはデータが空です。: $e');
+      showSnackBarMessage('ユーザーデータを登録してください。', context, mounted);
       return;
     }
 

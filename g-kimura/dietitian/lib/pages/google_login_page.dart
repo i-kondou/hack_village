@@ -1,5 +1,6 @@
 import 'package:dietitian/pages/home_page.dart';
 import 'package:dietitian/pages/my_information_page.dart';
+import 'package:dietitian/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -111,12 +112,15 @@ class GoogleLoginPageState extends State<GoogleLoginPage> {
               style: TextStyle(fontSize: 20),
               textAlign: TextAlign.center,
             ),
-            Image.asset('assets/images/kano-eiyo.png'),
+            Image.asset('assets/images/icon1.png', width: 100, height: 100),
             SizedBox(height: 20),
-            ElevatedButton.icon(
-              onPressed: _signInWithGoogle,
-              icon: Icon(Icons.login),
-              label: Text("Googleでログイン"),
+            customCardButton(
+              Icons.login,
+              //ボタンの大きさに余裕を持たせるため、文字列をスペースで囲む。
+              '  Googleでログイン  ',
+              null,
+              context,
+              onTap: _signInWithGoogle,
             ),
           ],
         ),
