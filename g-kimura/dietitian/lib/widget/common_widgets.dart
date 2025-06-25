@@ -1,3 +1,4 @@
+import "package:dietitian/widget/common_themes.dart";
 import "package:flutter/material.dart";
 
 Widget customLoadingIndicator(String message) {
@@ -74,13 +75,57 @@ Widget customElevatedButton({
       padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
     ),
     onPressed: isValid ? onPressed : null,
-    icon: Icon(icon, color: isValid ? Colors.teal : Colors.grey),
+    icon: Icon(icon, color: isValid ? Colors.teal : Colors.grey, size: 24),
     label: Text(
       label,
       style: TextStyle(
         color: isValid ? Colors.black : Colors.grey,
         fontWeight: FontWeight.w600,
       ),
+    ),
+  );
+}
+
+Widget customInputTextField({
+  required TextEditingController controller,
+  required String label,
+  required IconData icon,
+  required TextInputType keyboardType,
+}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
+    child: TextField(
+      controller: controller,
+      style: TextStyle(color: Colors.black),
+      cursorColor: Colors.black,
+      decoration: customInputDecoration(label, icon),
+      keyboardType: keyboardType,
+    ),
+  );
+}
+
+Widget customDropdownButton({
+  required String selectedValue,
+  required List<String> options,
+  required ValueChanged<String?> onChanged,
+  required String label,
+  required IconData icon,
+  String unselectedLabel = '未選択',
+}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
+    child: DropdownButtonFormField<String>(
+      value: selectedValue == '' ? unselectedLabel : selectedValue,
+      style: TextStyle(color: Colors.black),
+      decoration: customInputDecoration(label, icon),
+      items:
+          options
+              .map(
+                (option) =>
+                    DropdownMenuItem(value: option, child: Text(option)),
+              )
+              .toList(),
+      onChanged: onChanged,
     ),
   );
 }

@@ -9,3 +9,25 @@ BoxDecoration backGroundBoxDecoration() {
     ),
   );
 }
+
+InputDecoration customInputDecoration(String label, IconData icon) {
+  return InputDecoration(
+    labelText: label,
+    labelStyle: TextStyle(color: Colors.black.withValues(alpha: 0.8)),
+    icon: Icon(icon, color: Colors.white, size: 30),
+    filled: true,
+    fillColor: Colors.white.withValues(alpha: 0.6),
+    enabledBorder: UnderlineInputBorder(
+      borderSide: BorderSide(
+        color: Colors.black.withValues(alpha: 0.6),
+        width: 1.0,
+      ),
+    ),
+    focusedBorder: UnderlineInputBorder(
+      borderSide: BorderSide(
+        color: Colors.black.withValues(alpha: 0.6),
+        width: 2.0,
+      ),
+    ),
+  );
+}
