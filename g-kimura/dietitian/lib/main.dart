@@ -38,6 +38,9 @@ class MyApp extends StatelessWidget {
         '/googleLoginPage': (context) => GoogleLoginPage(), // Googleログイン画面
         '/uploadImagePage': (context) => UploadImagePage(), // 画像をアップロードする画面
         '/myInformationPage': (context) => MyInformationPage(), // マイ情報の画面
+        '/myInformationPageFirstLogin':
+            (context) =>
+                MyInformationPage(isFirstLogin: true), // 初ログイン時のマイ情報の画面
         '/mealRecordPage': (context) => MealRecordPage(), // 食事記録の画面
       },
     );

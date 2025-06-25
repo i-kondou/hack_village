@@ -20,6 +20,7 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   User? _user;
   String _dailyMessage = '';
+  PageStatus _pageStatus = PageStatus.userDataLoading;
 
   @override
   void initState() {
@@ -98,14 +99,30 @@ class HomePageState extends State<HomePage> {
 
   Future<void> _checkUserData() async {
     // ユーザーデータが保存されていない場合、マイ情報ページへ遷移
-    final userData = await requestReadAPI();
-    print('ユーザーデータ: $userData');
-    if (!isAllDataValid(userData, context, mounted)) {
+    // そもそもAPI失敗した場合はログインページへ遷移
+    try {
+      final userData = await requestReadAPI();
+      if (!isAllDataValid(userData, context, mounted)) {
+        if (!mounted) return;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.pushNamed(
+            context,
+            '/myInformationPageFirstLogin',
+            arguments: true,
+          );
+        });
+      } else {
+        print('ユーザーデータ:保存済みです。');
+        setState(() {
+          _pageStatus = PageStatus.userDataLoaded;
+        });
+      }
+    } catch (e) {
+      print('ユーザーデータの取得に失敗: $e');
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushNamed(context, '/myInformationPage', arguments: true);
+        Navigator.pushNamed(context, '/googleLoginPage', arguments: true);
       });
-    } else {
-      print('ユーザーデータ:保存済みです。');
+      return;
     }
   }
 
@@ -126,69 +143,82 @@ class HomePageState extends State<HomePage> {
         children: [
           Container(decoration: backGroundBoxDecoration()),
           SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundImage: AssetImage('assets/images/icon1.png'),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    displayName != null
-                        ? 'こんにちは、$displayName さん'
-                        : 'ユーザーID: $uid',
-                    style: const TextStyle(fontSize: 18, color: Colors.white),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    _dailyMessage,
-                    style: TextStyle(fontSize: 16, color: Colors.yellow[100]),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 32),
-                  Expanded(
-                    child: GridView.count(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                      children: [
-                        customCardButton(
-                          Icons.image,
-                          '画像アップロード',
-                          '/uploadImagePage',
-                          context,
-                        ),
-                        customCardButton(
-                          Icons.person,
-                          'マイ情報',
-                          '/myInformationPage',
-                          context,
-                        ),
-                        customCardButton(
-                          Icons.restaurant,
-                          '食事記録',
-                          '/mealRecordPage',
-                          context,
-                        ),
-                        customCardButton(
-                          Icons.logout,
-                          'ログアウト',
-                          null,
-                          context,
-                          onTap: _onLogoutButtonPressed,
-                        ),
-                      ],
+            child:
+                _pageStatus == PageStatus.userDataLoading
+                    ? Center(child: customLoadingIndicator("ローディング中..."))
+                    : Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          CircleAvatar(
+                            radius: 40,
+                            backgroundImage: AssetImage(
+                              'assets/images/icon1.png',
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            displayName != null
+                                ? 'こんにちは、$displayName さん'
+                                : 'ユーザーID: $uid',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            _dailyMessage,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.yellow[100],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 32),
+                          Expanded(
+                            child: GridView.count(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 16,
+                              children: [
+                                customCardButton(
+                                  Icons.image,
+                                  '画像アップロード',
+                                  '/uploadImagePage',
+                                  context,
+                                ),
+                                customCardButton(
+                                  Icons.person,
+                                  'マイ情報',
+                                  '/myInformationPage',
+                                  context,
+                                ),
+                                customCardButton(
+                                  Icons.restaurant,
+                                  '食事記録',
+                                  '/mealRecordPage',
+                                  context,
+                                ),
+                                customCardButton(
+                                  Icons.logout,
+                                  'ログアウト',
+                                  null,
+                                  context,
+                                  onTap: _onLogoutButtonPressed,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
           ),
         ],
       ),
     );
   }
 }
+
+enum PageStatus { userDataLoading, userDataLoaded }
