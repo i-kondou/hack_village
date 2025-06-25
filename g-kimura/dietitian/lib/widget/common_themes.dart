@@ -1,8 +1,68 @@
 import 'package:flutter/material.dart';
 
-ThemeData customTheme() {
-  return ThemeData();
-  // TODO: 未実装
+// TODO: まだ未完成、未使用
+ThemeData customThemeData() {
+  return ThemeData(
+    useMaterial3: true,
+    scaffoldBackgroundColor: Colors.transparent,
+
+    appBarTheme: AppBarTheme(
+      backgroundColor: Colors.teal.shade600,
+      foregroundColor: Colors.white,
+      centerTitle: true,
+    ),
+
+    inputDecorationTheme: InputDecorationTheme(
+      labelStyle: TextStyle(color: Colors.black.withValues(alpha: 0.8)),
+      filled: true,
+      fillColor: Colors.white.withValues(alpha: 0.6),
+      iconColor: Colors.white,
+      enabledBorder: UnderlineInputBorder(
+        borderSide: BorderSide(
+          color: Colors.black.withValues(alpha: 0.6),
+          width: 1.0,
+        ),
+      ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(
+          color: Colors.black.withValues(alpha: 0.6),
+          width: 2.0,
+        ),
+      ),
+    ),
+
+    textTheme: TextTheme(
+      bodyLarge: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: Colors.white.withValues(alpha: 0.9),
+      ),
+      bodyMedium: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.normal,
+        color: Colors.white.withValues(alpha: 0.9),
+      ),
+    ),
+
+    textSelectionTheme: TextSelectionThemeData(
+      cursorColor: Colors.black,
+      selectionHandleColor: Colors.teal.shade300,
+      selectionColor: Colors.teal.shade100,
+    ),
+
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white.withValues(alpha: 0.9),
+        foregroundColor: Colors.black,
+        textStyle: TextStyle(fontWeight: FontWeight.bold),
+      ),
+    ),
+
+    iconTheme: IconThemeData(
+      color: Colors.white.withValues(alpha: 0.9),
+      size: 30,
+    ),
+  );
 }
 
 BoxDecoration backGroundBoxDecoration() {
