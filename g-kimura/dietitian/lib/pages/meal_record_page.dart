@@ -70,7 +70,7 @@ class MealRecordPageState extends State<MealRecordPage>
                       Expanded(
                         flex: 5,
                         child: Text(
-                          e.value,
+                          e.value + (nutritionFactsUnits[e.key] ?? ''),
                           style: const TextStyle(fontSize: 16),
                         ),
                       ),
@@ -164,7 +164,10 @@ class MealRecordPageState extends State<MealRecordPage>
                     ),
                   ),
                   leftTitles: AxisTitles(
-                    sideTitles: SideTitles(showTitles: true),
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  topTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
                   ),
                 ),
                 lineBarsData:
@@ -198,7 +201,10 @@ class MealRecordPageState extends State<MealRecordPage>
                       color: colors[i % colors.length],
                     ),
                     SizedBox(width: 4),
-                    Text(nutritionFactsLabel[name] ?? name),
+                    Text(
+                      '${nutritionFactsLabel[name] ?? name} (${nutritionFactsUnits[name] ?? ''})',
+                      style: TextStyle(fontSize: 16),
+                    ),
                   ],
                 );
               }).toList(),
