@@ -106,28 +106,42 @@ class UploadImagePageState extends State<UploadImagePage> {
       body: Stack(
         children: [
           Container(decoration: backGroundBoxDecoration()),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _image != null
-                    ? Image.file(_image!, height: 200)
-                    : Text("画像が選択されていません"),
-                SizedBox(height: 20),
-                Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [selectCameraButton(), selectAlbumButton()],
+          SafeArea(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
                     ),
-                  ],
-                ),
-                SizedBox(height: 20),
-                uploadButton(),
-                SizedBox(height: 20),
-                detailInfo(),
-              ],
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _image != null
+                                ? Image.file(_image!, height: 200)
+                                : Text("画像が選択されていません"),
+                            SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                selectCameraButton(),
+                                selectAlbumButton(),
+                              ],
+                            ),
+                            SizedBox(height: 20),
+                            uploadButton(),
+                            SizedBox(height: 20),
+                            detailInfo(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ],
