@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dietitian/recources/nutrition_facts.dart';
 import 'package:dietitian/services/storage_helper.dart';
 import 'package:dietitian/widget/common_themes.dart';
 import 'package:flutter/material.dart';
@@ -205,14 +206,24 @@ class UploadImagePageState extends State<UploadImagePage> {
           children: [
             // data から取り出して表示
             _buildBoldText("menu_name"),
-            _buildText("calorie", "カロリー"),
-            _buildText("protein", "タンパク質"),
-            _buildText("fat", "脂質"),
-            _buildText("carbohydrate", "炭水化物"),
-            _buildText("dietary_fiber", "食物繊維"),
-            _buildText("vitamin", "ビタミン"),
-            _buildText("mineral", "ミネラル"),
-            _buildText("sodium", "ナトリウム"),
+            ...[
+                  "calorie",
+                  "protein",
+                  "fat",
+                  "carbohydrate",
+                  "dietary_fiber",
+                  "vitamin",
+                  "mineral",
+                  "sodium",
+                ]
+                .map(
+                  (key) => _buildText(
+                    key,
+                    nutritionFactsLabel[key]!,
+                    nutritionFactsUnits[key]!,
+                  ),
+                )
+                .toList(),
             _buildBoldText("advice_message"),
           ],
         );
@@ -232,7 +243,8 @@ class UploadImagePageState extends State<UploadImagePage> {
   }
 
   // 要素ごとの表示
-  Widget _buildText(String key, String name) {
+  Widget _buildText(String key, String name, String value) {
+    print("key: $key, name: $name");
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -242,7 +254,7 @@ class UploadImagePageState extends State<UploadImagePage> {
           padding: const EdgeInsets.only(right: 40.0),
           child:
               (_analysisResult != null && _analysisResult!.containsKey(key))
-                  ? Text("${_analysisResult![key]}")
+                  ? Text("${_analysisResult![key]}$value")
                   : Text("データがありません"),
         ),
       ],
