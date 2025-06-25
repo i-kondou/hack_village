@@ -106,28 +106,28 @@ class UploadImagePageState extends State<UploadImagePage> {
       body: Stack(
         children: [
           Container(decoration: backGroundBoxDecoration()),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _image != null
-                    ? Image.file(_image!, height: 200)
-                    : Text("画像が選択されていません"),
-                SizedBox(height: 20),
-                Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [selectCameraButton(), selectAlbumButton()],
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20),
-                uploadButton(),
-                SizedBox(height: 20),
-                detailInfo(),
-              ],
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  pictureArea(context),
+                  SizedBox(height: 20),
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [selectCameraButton(), selectAlbumButton()],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  uploadButton(),
+                  SizedBox(height: 20),
+                  detailInfo(),
+                ],
+              ),
             ),
           ),
         ],
@@ -137,6 +137,32 @@ class UploadImagePageState extends State<UploadImagePage> {
 
   // ====================================================
   //  ↓↓ ここから下　Widget 宣言 ↓↓
+
+  Widget pictureArea(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    return Container(
+      width: screenWidth * 0.9,
+      height: screenHeight * 0.4,
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.9),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Center(
+        child:
+            _image != null
+                ? Image.file(_image!, fit: BoxFit.contain)
+                : Text(
+                  "画像が選択されていません",
+                  style: TextStyle(color: Colors.black54),
+                  textAlign: TextAlign.center,
+                ),
+      ),
+    );
+  }
 
   Widget uploadButton() {
     return customElevatedButton(
@@ -190,48 +216,76 @@ class UploadImagePageState extends State<UploadImagePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // data から取り出して表示
-            _buildBoldText("menu_name"),
-            _buildText("calorie", "カロリー"),
-            _buildText("protein", "タンパク質"),
-            _buildText("fat", "脂質"),
-            _buildText("carbohydrate", "炭水化物"),
-            _buildText("dietary_fiber", "食物繊維"),
-            _buildText("vitamin", "ビタミン"),
-            _buildText("mineral", "ミネラル"),
-            _buildText("sodium", "ナトリウム"),
-            _buildBoldText("advice_message"),
+            _buildMenuText("menu_name"),
+            _buildNutoritionText("calorie", "カロリー"),
+            _buildNutoritionText("protein", "タンパク質"),
+            _buildNutoritionText("fat", "脂質"),
+            _buildNutoritionText("carbohydrate", "炭水化物"),
+            _buildNutoritionText("dietary_fiber", "食物繊維"),
+            _buildNutoritionText("vitamin", "ビタミン"),
+            _buildNutoritionText("mineral", "ミネラル"),
+            _buildNutoritionText("sodium", "ナトリウム"),
+            _buildAdviceText("advice_message"),
           ],
         );
     }
   }
 
   // メニュー名は別
-  Widget _buildBoldText(String key) {
-    return Text(
-      "${_analysisResult![key]}",
-      style: TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: 18,
-        color: Theme.of(context).primaryColor,
+  Widget _buildMenuText(String key) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+      child: Text(
+        _analysisResult![key] ?? "データがありません",
+        style: customColoredLargeBoldTextStyle(),
+        textAlign: TextAlign.left, // 左揃え。center なども可
+        softWrap: true,
+        overflow: TextOverflow.visible,
       ),
     );
   }
 
-  // 要素ごとの表示
-  Widget _buildText(String key, String name) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Padding(padding: const EdgeInsets.only(left: 40.0), child: Text(name)),
-        Spacer(),
-        Padding(
-          padding: const EdgeInsets.only(right: 40.0),
-          child:
-              (_analysisResult != null && _analysisResult!.containsKey(key))
-                  ? Text("${_analysisResult![key]}")
-                  : Text("データがありません"),
-        ),
-      ],
+  Widget _buildAdviceText(String key) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+      child: Text(
+        _analysisResult![key] ?? "データがありません",
+        style: customColoredNormalTextStyle(),
+        textAlign: TextAlign.left, // 左揃え。center なども可
+        softWrap: true,
+        overflow: TextOverflow.visible,
+      ),
+    );
+  }
+
+  Widget _buildNutoritionText(String key, String name) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 0.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(name, style: customColoredNormalTextStyle()),
+            ),
+          ),
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerRight,
+              child:
+                  (_analysisResult != null && _analysisResult!.containsKey(key))
+                      ? Text(
+                        _analysisResult![key].toStringAsPrecision(3),
+                        style: customColoredNormalTextStyle(),
+                      )
+                      : Text(
+                        "データがありません",
+                        style: customColoredNormalTextStyle(),
+                      ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
