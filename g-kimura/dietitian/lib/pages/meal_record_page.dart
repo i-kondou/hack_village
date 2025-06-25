@@ -1,3 +1,4 @@
+import 'package:dietitian/recources/nutrition_facts.dart';
 import 'package:dietitian/widget/common_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -58,7 +59,7 @@ class MealRecordPageState extends State<MealRecordPage>
                       Expanded(
                         flex: 3,
                         child: Text(
-                          e.key,
+                          nutritionFactsLabel[e.key] ?? e.key,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
@@ -197,7 +198,7 @@ class MealRecordPageState extends State<MealRecordPage>
                       color: colors[i % colors.length],
                     ),
                     SizedBox(width: 4),
-                    Text(name),
+                    Text(nutritionFactsLabel[name] ?? name),
                   ],
                 );
               }).toList(),

@@ -1,0 +1,15 @@
+Map<String, String> nutritionFactsLabel = {
+  "calorie": "カロリー",
+  "protein": "タンパク質",
+  "fat": "脂質",
+  "carbohydrate": "炭水化物",
+  "dietary_fiber": "食物繊維",
+  "vitamin": "ビタミン",
+  "mineral": "ミネラル",
+  "sodium": "ナトリウム",
+  "advice_message": "アドバイス",
+  "menu_name": "メニュー名",
+  "menu": "メニュー名",
+  "meal_number": "番号",
+  "date": "日付",
+};

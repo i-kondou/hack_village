@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dietitian/recources/nutrition_facts.dart';
 import 'package:dietitian/services/storage_helper.dart';
 import 'package:dietitian/widget/common_themes.dart';
 import 'package:flutter/material.dart';
@@ -205,14 +206,16 @@ class UploadImagePageState extends State<UploadImagePage> {
           children: [
             // data から取り出して表示
             _buildBoldText("menu_name"),
-            _buildText("calorie", "カロリー"),
-            _buildText("protein", "タンパク質"),
-            _buildText("fat", "脂質"),
-            _buildText("carbohydrate", "炭水化物"),
-            _buildText("dietary_fiber", "食物繊維"),
-            _buildText("vitamin", "ビタミン"),
-            _buildText("mineral", "ミネラル"),
-            _buildText("sodium", "ナトリウム"),
+            ...[
+              "calorie",
+              "protein",
+              "fat",
+              "carbohydrate",
+              "dietary_fiber",
+              "vitamin",
+              "mineral",
+              "sodium",
+            ].map((key) => _buildText(key, nutritionFactsLabel[key]!)).toList(),
             _buildBoldText("advice_message"),
           ],
         );
