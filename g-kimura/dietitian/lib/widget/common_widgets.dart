@@ -7,9 +7,14 @@ Widget customLoadingIndicator(String message) {
     children: [
       Padding(
         padding: const EdgeInsets.only(left: 100.0),
-        child: CircularProgressIndicator(),
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(
+            Colors.white.withValues(alpha: 0.8),
+          ),
+          strokeWidth: 4.0,
+        ),
       ),
-      SizedBox(width: 10), // スペースを空けるためのウィジェット
+      SizedBox(width: 10),
       Padding(
         padding: const EdgeInsets.only(right: 100.0),
         child: Text(message),
