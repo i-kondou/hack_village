@@ -207,15 +207,23 @@ class UploadImagePageState extends State<UploadImagePage> {
             // data から取り出して表示
             _buildBoldText("menu_name"),
             ...[
-              "calorie",
-              "protein",
-              "fat",
-              "carbohydrate",
-              "dietary_fiber",
-              "vitamin",
-              "mineral",
-              "sodium",
-            ].map((key) => _buildText(key, nutritionFactsLabel[key]!)).toList(),
+                  "calorie",
+                  "protein",
+                  "fat",
+                  "carbohydrate",
+                  "dietary_fiber",
+                  "vitamin",
+                  "mineral",
+                  "sodium",
+                ]
+                .map(
+                  (key) => _buildText(
+                    key,
+                    nutritionFactsLabel[key]!,
+                    nutritionFactsUnits[key]!,
+                  ),
+                )
+                .toList(),
             _buildBoldText("advice_message"),
           ],
         );
@@ -235,7 +243,8 @@ class UploadImagePageState extends State<UploadImagePage> {
   }
 
   // 要素ごとの表示
-  Widget _buildText(String key, String name) {
+  Widget _buildText(String key, String name, String value) {
+    print("key: $key, name: $name");
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -245,7 +254,7 @@ class UploadImagePageState extends State<UploadImagePage> {
           padding: const EdgeInsets.only(right: 40.0),
           child:
               (_analysisResult != null && _analysisResult!.containsKey(key))
-                  ? Text("${_analysisResult![key]}")
+                  ? Text("${_analysisResult![key]}$value")
                   : Text("データがありません"),
         ),
       ],

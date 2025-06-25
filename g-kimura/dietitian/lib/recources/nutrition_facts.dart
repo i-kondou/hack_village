@@ -13,3 +13,13 @@ Map<String, String> nutritionFactsLabel = {
   "meal_number": "番号",
   "date": "日付",
 };
+Map<String, String> nutritionFactsUnits = {
+  "calorie": "kcal",
+  "protein": "g",
+  "fat": "g",
+  "carbohydrate": "g",
+  "dietary_fiber": "g",
+  "vitamin": "mg",
+  "mineral": "mg",
+  "sodium": "g",
+};
