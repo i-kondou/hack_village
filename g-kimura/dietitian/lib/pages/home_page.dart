@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../recources/daily_messages.dart';
+import '../widget/common_widgets.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -115,25 +116,29 @@ class HomePageState extends State<HomePage> {
                       crossAxisSpacing: 16,
                       mainAxisSpacing: 16,
                       children: [
-                        _buildCardButton(
+                        customCardButton(
                           Icons.image,
                           '画像アップロード',
                           '/uploadImagePage',
+                          context,
                         ),
-                        _buildCardButton(
+                        customCardButton(
                           Icons.person,
                           'マイ情報',
                           '/myInformationPage',
+                          context,
                         ),
-                        _buildCardButton(
+                        customCardButton(
                           Icons.restaurant,
                           '食事記録',
                           '/mealRecordPage',
+                          context,
                         ),
-                        _buildCardButton(
+                        customCardButton(
                           Icons.logout,
                           'ログアウト',
                           null,
+                          context,
                           onTap: _onLogoutButtonPressed,
                         ),
                       ],
@@ -144,41 +149,6 @@ class HomePageState extends State<HomePage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildCardButton(
-    IconData icon,
-    String label,
-    String? routeName, {
-    VoidCallback? onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap ?? () => Navigator.pushNamed(context, routeName!),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.9),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 8,
-              offset: Offset(2, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 40, color: Colors.teal),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-            ),
-          ],
-        ),
       ),
     );
   }

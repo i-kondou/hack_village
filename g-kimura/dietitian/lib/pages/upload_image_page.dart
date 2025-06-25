@@ -138,38 +138,33 @@ class UploadImagePageState extends State<UploadImagePage> {
   // ====================================================
   //  ↓↓ ここから下　Widget 宣言 ↓↓
 
-  // アップロードボタン
   Widget uploadButton() {
-    return ElevatedButton.icon(
-      onPressed:
-          _image != null ? () async => await _uploadImageToFirebase() : null,
-      icon: Icon(Icons.upload),
-      label: Text("アップロード"),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: _image != null ? null : Colors.grey,
-      ),
+    return customElevatedButton(
+      onPressed: () async => await _uploadImageToFirebase(),
+      icon: Icons.upload,
+      label: "アップロード",
+      isValid: _image != null,
     );
   }
 
-  // カメラ選択ボタン
   Widget selectCameraButton() {
-    return ElevatedButton.icon(
+    return customElevatedButton(
       onPressed: () => _pickImage(ImageSource.camera),
-      icon: Icon(Icons.camera_alt),
-      label: Text("カメラ"),
+      icon: Icons.camera_alt,
+      label: "カメラ",
+      isValid: true,
     );
   }
 
-  // アルバム選択ボタン
   Widget selectAlbumButton() {
-    return ElevatedButton.icon(
+    return customElevatedButton(
       onPressed: () => _pickImage(ImageSource.gallery),
-      icon: Icon(Icons.photo),
-      label: Text("アルバム"),
+      icon: Icons.photo,
+      label: "アルバム",
+      isValid: true,
     );
   }
 
-  // 詳細情報表示
   Widget detailInfo() {
     switch (_pageStatus) {
       case PageStatus.idle:
@@ -181,13 +176,13 @@ class UploadImagePageState extends State<UploadImagePage> {
       case PageStatus.imagePickFailed:
         return Text("画像の選択に失敗しました。 $_errorMessage");
       case PageStatus.uploading:
-        return loadingIndicator("アップロード中...");
+        return customLoadingIndicator("アップロード中...");
       case PageStatus.uploadFailed:
         return Text("アップロードに失敗しました。 $_errorMessage");
       case PageStatus.uploadComplete:
         return Column(children: [Text("アップロードに成功しました！"), Text("分析を開始します。")]);
       case PageStatus.analyzing:
-        return loadingIndicator("分析中...");
+        return customLoadingIndicator("分析中...");
       case PageStatus.analyzeFailed:
         return Text("分析に失敗しました。 $_errorMessage");
       case PageStatus.analysisComplete:
