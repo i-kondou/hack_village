@@ -190,7 +190,7 @@ class UploadImagePageState extends State<UploadImagePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // data から取り出して表示
-            _buildBoldText("menu"),
+            _buildBoldText("menu_name"),
             _buildText("calorie", "カロリー"),
             _buildText("protein", "タンパク質"),
             _buildText("fat", "脂質"),
