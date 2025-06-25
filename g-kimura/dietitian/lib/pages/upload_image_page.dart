@@ -257,7 +257,7 @@ class UploadImagePageState extends State<UploadImagePage> {
   }
 
   // メニュー名は別
-  Widget _buildMenuText(String key) {
+  Widget _buildBoldText(String key) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
       child: Text(
