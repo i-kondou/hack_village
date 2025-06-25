@@ -146,7 +146,7 @@ class HomePageState extends State<HomePage> {
             child:
                 _pageStatus == PageStatus.userDataLoading
                     ? Center(child: customLoadingIndicator("ローディング中..."))
-                    : Padding(
+                    : SingleChildScrollView(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -177,39 +177,39 @@ class HomePageState extends State<HomePage> {
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 32),
-                          Expanded(
-                            child: GridView.count(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 16,
-                              mainAxisSpacing: 16,
-                              children: [
-                                customCardButton(
-                                  Icons.image,
-                                  '画像アップロード',
-                                  '/uploadImagePage',
-                                  context,
-                                ),
-                                customCardButton(
-                                  Icons.person,
-                                  'マイ情報',
-                                  '/myInformationPage',
-                                  context,
-                                ),
-                                customCardButton(
-                                  Icons.restaurant,
-                                  '食事記録',
-                                  '/mealRecordPage',
-                                  context,
-                                ),
-                                customCardButton(
-                                  Icons.logout,
-                                  'ログアウト',
-                                  null,
-                                  context,
-                                  onTap: _onLogoutButtonPressed,
-                                ),
-                              ],
-                            ),
+                          GridView.extent(
+                            maxCrossAxisExtent: 200,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            children: [
+                              customCardButton(
+                                Icons.image,
+                                '画像アップロード',
+                                '/uploadImagePage',
+                                context,
+                              ),
+                              customCardButton(
+                                Icons.person,
+                                'マイ情報',
+                                '/myInformationPage',
+                                context,
+                              ),
+                              customCardButton(
+                                Icons.restaurant,
+                                '食事記録',
+                                '/mealRecordPage',
+                                context,
+                              ),
+                              customCardButton(
+                                Icons.logout,
+                                'ログアウト',
+                                null,
+                                context,
+                                onTap: _onLogoutButtonPressed,
+                              ),
+                            ],
                           ),
                         ],
                       ),
