@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 Future<Map<String, dynamic>?> analyzeImage(String imageUrl) async {
   final uri = Uri.parse(
-    'https://dietitian-backend--feat-919605860399.us-central1.run.app/',
+    'https://dietitian-backend--main-919605860399.us-central1.run.app/',
   );
   final dio = Dio(BaseOptions(baseUrl: uri.toString()));
 

@@ -241,20 +241,15 @@ class MyInformationPageState extends State<MyInformationPage> {
   Widget _saveSection() {
     switch (_pageStatus) {
       case PageStatus.loading:
-        return Center(child: loadingIndicator("読み込み中..."));
+        return Center(child: customLoadingIndicator("読み込み中..."));
       case PageStatus.saving:
-        return Center(child: loadingIndicator("保存中..."));
+        return Center(child: customLoadingIndicator("保存中..."));
       case PageStatus.neutral:
-        return ElevatedButton.icon(
+        return customElevatedButton(
           onPressed: _save,
-          style: ElevatedButton.styleFrom(
-            padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-          icon: Icon(Icons.save),
-          label: Text('保存する'),
+          icon: Icons.save,
+          label: '保存する',
+          isValid: true,
         );
     }
   }
@@ -276,8 +271,8 @@ class MyInformationPageState extends State<MyInformationPage> {
                   ? Column(
                     children: [
                       SizedBox(height: 30),
-                      largeBoldColoredText('はじめまして。', context),
-                      largeBoldColoredText('あなたのことを教えてください！', context),
+                      customLargeBoldColoredText('はじめまして。', context),
+                      customLargeBoldColoredText('あなたのことを教えてください！', context),
                     ],
                   )
                   : SizedBox.shrink(),
