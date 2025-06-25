@@ -68,7 +68,11 @@ class HomePageState extends State<HomePage> {
         await FirebaseAuth.instance.signOut();
         StorageHelper.saveString('userdata_saved', 'false');
         if (!mounted) return;
-        Navigator.pushNamed(context, '/googleLoginPage');
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/googleLoginPage',
+          (Route<dynamic> route) => false,
+        );
       }
     });
   }
