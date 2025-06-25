@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+ThemeData customTheme() {
+  return ThemeData();
+  // TODO: 未実装
+}
+
 BoxDecoration backGroundBoxDecoration() {
   return BoxDecoration(
     gradient: LinearGradient(
@@ -29,5 +34,21 @@ InputDecoration customInputDecoration(String label, IconData icon) {
         width: 2.0,
       ),
     ),
+  );
+}
+
+TextStyle customColoredLargeBoldTextStyle() {
+  return TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 18,
+    color: Colors.white.withValues(alpha: 0.9),
+  );
+}
+
+TextStyle customColoredNormalTextStyle() {
+  return TextStyle(
+    fontWeight: FontWeight.normal,
+    fontSize: 14,
+    color: Colors.white.withValues(alpha: 0.9),
   );
 }

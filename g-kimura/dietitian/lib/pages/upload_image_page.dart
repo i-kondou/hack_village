@@ -153,6 +153,32 @@ class UploadImagePageState extends State<UploadImagePage> {
   // ====================================================
   //  ↓↓ ここから下　Widget 宣言 ↓↓
 
+  Widget pictureArea(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    return Container(
+      width: screenWidth * 0.9,
+      height: screenHeight * 0.4,
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.9),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Center(
+        child:
+            _image != null
+                ? Image.file(_image!, fit: BoxFit.contain)
+                : Text(
+                  "画像が選択されていません",
+                  style: TextStyle(color: Colors.black54),
+                  textAlign: TextAlign.center,
+                ),
+      ),
+    );
+  }
+
   Widget uploadButton() {
     return customElevatedButton(
       onPressed: () async => await _uploadImageToFirebase(),
@@ -231,13 +257,15 @@ class UploadImagePageState extends State<UploadImagePage> {
   }
 
   // メニュー名は別
-  Widget _buildBoldText(String key) {
-    return Text(
-      "${_analysisResult![key]}",
-      style: TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: 18,
-        color: Theme.of(context).primaryColor,
+  Widget _buildMenuText(String key) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+      child: Text(
+        _analysisResult![key] ?? "データがありません",
+        style: customColoredLargeBoldTextStyle(),
+        textAlign: TextAlign.left, // 左揃え。center なども可
+        softWrap: true,
+        overflow: TextOverflow.visible,
       ),
     );
   }

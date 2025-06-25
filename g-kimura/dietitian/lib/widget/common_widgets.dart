@@ -23,13 +23,19 @@ Widget customLoadingIndicator(String message) {
   );
 }
 
-Widget customLargeBoldColoredText(String text, BuildContext context) {
-  return Text(
-    text,
-    style: TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 18,
-      color: Theme.of(context).primaryColor,
+Widget customLargeBoldColoredTextArea(String text, BuildContext context) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+    child: Text(
+      text,
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 18,
+        color: Colors.white.withValues(alpha: 0.9),
+      ),
+      textAlign: TextAlign.left,
+      softWrap: true,
+      overflow: TextOverflow.visible,
     ),
   );
 }
