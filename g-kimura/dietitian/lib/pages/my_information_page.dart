@@ -137,7 +137,7 @@ class MyInformationPageState extends State<MyInformationPage> {
       if (!mounted) return;
       showSnackBarMessage('保存しました。', context, mounted);
       //本体に「ユーザーデータが保存されていること」を保存する
-      StorageHelper.saveString('userdata_saved', 'true');  
+      StorageHelper.saveString('userdata_saved', 'true');
       if (widget.isFirstLogin) {
         Navigator.pushReplacementNamed(context, '/homePage');
       }
@@ -161,6 +161,7 @@ class MyInformationPageState extends State<MyInformationPage> {
       //データの読み取りに失敗した場合と、データが元からなかった場合が考えられる。
       print('❌ ユーザーデータの読み込みに失敗しました。またはデータが空です。: $e');
       showSnackBarMessage('ユーザーデータを登録してください。', context, mounted);
+      setPageStatus(PageStatus.neutral);
       return;
     }
 

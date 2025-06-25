@@ -1,5 +1,6 @@
 import 'package:dietitian/pages/home_page.dart';
 import 'package:dietitian/pages/my_information_page.dart';
+import 'package:dietitian/utils/show_message.dart';
 import 'package:dietitian/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -70,9 +71,11 @@ class GoogleLoginPageState extends State<GoogleLoginPage> {
           print('ユーザー情報が存在しません: ${response.data}');
         }
         print('✅ ユーザー登録成功');
+        //showSnackBarMessage('ユーザー登録に成功しました', context, mounted);
       } catch (e) {
         print('❌ ユーザー登録失敗: $e');
-        return;
+        //showSnackBarMessage('ユーザー登録に失敗しました', context, mounted);
+        isRegistered = false;
       }
 
       // 5. ページ移動
@@ -94,8 +97,10 @@ class GoogleLoginPageState extends State<GoogleLoginPage> {
       }
 
       print("✅ ログイン成功: ${_user?.displayName}");
+      showSnackBarMessage('ログインに成功しました', context, mounted);
     } catch (e) {
       print("❌ ログインエラー: $e");
+      showSnackBarMessage('ログインに失敗しました: $e', context, mounted);
     }
   }
 
