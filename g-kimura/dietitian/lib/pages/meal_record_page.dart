@@ -112,15 +112,7 @@ class MealRecordPageState extends State<MealRecordPage>
     // 表示対象とするキーを定義（ここでは数値データのみと仮定し、最初のデータから取得）
     final keys =
         data.first.keys
-            .where(
-              (k) =>
-                  ![
-                    'meal_number',
-                    'advice_message',
-                    'menu',
-                    'date',
-                  ].contains(k),
-            )
+            .where((k) => !['advice_message', 'menu', 'date'].contains(k))
             .toList();
 
     // 栄養素ごとのスポットをMapに保存
@@ -165,6 +157,7 @@ class MealRecordPageState extends State<MealRecordPage>
                       getTitlesWidget: (value, meta) {
                         final index = value.toInt();
                         if (index >= 0 && index < data.length) {
+                          //del
                           return Text(data[index]['meal_number'] ?? '');
                         }
                         return const Text('');

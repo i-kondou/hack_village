@@ -10,7 +10,6 @@ Map<String, String> nutritionFactsLabel = {
   "advice_message": "アドバイス",
   "menu_name": "メニュー名",
   "menu": "メニュー名",
-  "meal_number": "番号",
   "date": "日付",
 };
 Map<String, String> nutritionFactsUnits = {
