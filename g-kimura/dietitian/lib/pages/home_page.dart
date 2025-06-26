@@ -102,8 +102,8 @@ class HomePageState extends State<HomePage> {
     // そもそもAPI失敗した場合はログインページへ遷移
     try {
       final userData = await requestReadAPI();
+      if (!mounted) return;
       if (!isAllDataValid(userData, context, mounted)) {
-        if (!mounted) return;
         WidgetsBinding.instance.addPostFrameCallback((_) {
           Navigator.pushNamed(
             context,

@@ -133,7 +133,7 @@ class MyInformationPageState extends State<MyInformationPage> {
 
     try {
       await requestUpdateAPI();
-      print('✅ ユーザー情報登録に成功しました: ${userData}');
+      print('✅ ユーザー情報登録に成功しました: $userData');
       if (!mounted) return;
       showSnackBarMessage('保存しました。', context, mounted);
       //本体に「ユーザーデータが保存されていること」を保存する
@@ -160,6 +160,7 @@ class MyInformationPageState extends State<MyInformationPage> {
     } catch (e) {
       //データの読み取りに失敗した場合と、データが元からなかった場合が考えられる。
       print('❌ ユーザーデータの読み込みに失敗しました。またはデータが空です。: $e');
+      if (!mounted) return;
       showSnackBarMessage('ユーザーデータを登録してください。', context, mounted);
       setPageStatus(PageStatus.neutral);
       return;
