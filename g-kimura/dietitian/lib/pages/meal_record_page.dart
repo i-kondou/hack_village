@@ -1,5 +1,6 @@
 import 'package:dietitian/recources/nutrition_facts.dart';
 import 'package:dietitian/widget/common_themes.dart';
+import 'package:dietitian/widget/common_widgets.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -14,44 +15,56 @@ class MealRecordPage extends StatefulWidget {
 
 class MealRecordPageState extends State<MealRecordPage>
     with TickerProviderStateMixin {
-  late Future<List<Map<String, String>>> _mealDataListFuture;
+  List<Map<String, String>> _mealDataList = [];
   late TabController _tabController;
+  PageStatus _pageStatus = PageStatus.userDataLoading;
 
   @override
   void initState() {
     super.initState();
-    _mealDataListFuture = _loadMealDataList();
+    _loadMealDataList();
     _tabController = TabController(length: 2, vsync: this);
   }
 
-  Future<List<Map<String, String>>> _loadMealDataList() async {
-    final token = await FirebaseAuth.instance.currentUser?.getIdToken();
-    final response = await Dio().get(
-      'https://dietitian-backend--feat-919605860399.us-central1.run.app/meal/list',
-      options: Options(
-        contentType: 'application/json',
-        headers: {"Authorization": 'Bearer ${token ?? ''}'},
-      ),
-    );
-    List<Map<String, String>> mealDataList = [];
-    for (var i = 1; i < response.data['meal_records'].length; i++) {
-      Map<String, dynamic> responseData = response.data['meal_records'][i];
-      Map<String, String> mealData = {};
-      for (var key in responseData.keys) {
-        if (key != 'imageUrl') {
-          mealData[key] = responseData[key].toString();
+  Future<void> _loadMealDataList() async {
+    setState(() => _pageStatus = PageStatus.userDataLoading);
+
+    try {
+      final token = await FirebaseAuth.instance.currentUser?.getIdToken();
+      final response = await Dio().get(
+        'https://dietitian-backend--feat-919605860399.us-central1.run.app/meal/list',
+        options: Options(
+          contentType: 'application/json',
+          headers: {"Authorization": 'Bearer ${token ?? ''}'},
+        ),
+      );
+
+      final data = <Map<String, String>>[];
+      for (var i = 1; i < response.data['meal_records'].length; i++) {
+        final record = response.data['meal_records'][i];
+        final entry = <String, String>{};
+        for (var key in record.keys) {
+          if (key != 'imageUrl') {
+            entry[key] =
+                key == 'eatenAt'
+                    ? DateTime.parse(
+                      record[key],
+                    ).toLocal().toString().substring(0, 16)
+                    : record[key].toString();
+          }
         }
-        if (key == 'eatenAt') {
-          // 日付を整形
-          DateTime dateTime = DateTime.parse(responseData[key]);
-          mealData[key] =
-              '${dateTime.year}/${dateTime.month}/${dateTime.day} ${dateTime.hour}:${dateTime.minute}';
-        }
+        data.add(entry);
       }
-      print('mealDataList[$i]: $mealData');
-      mealDataList.add(mealData);
+
+      setState(() {
+        _mealDataList = data;
+        _pageStatus =
+            data.isEmpty ? PageStatus.dataEmpty : PageStatus.dataLoaded;
+      });
+    } catch (e) {
+      print("エラー: $e");
+      setState(() => _pageStatus = PageStatus.error);
     }
-    return mealDataList;
   }
 
   // データをカード形式に変換するロジック
@@ -192,7 +205,7 @@ class MealRecordPageState extends State<MealRecordPage>
                     }).toList(),
                 gridData: FlGridData(show: true),
                 borderData: FlBorderData(show: true),
-                lineTouchData: LineTouchData(enabled: true),
+                lineTouchData: LineTouchData(enabled: false),
               ),
             ),
           ),
@@ -233,13 +246,11 @@ class MealRecordPageState extends State<MealRecordPage>
           tabs: const [
             Tab(
               child: Row(
-                mainAxisSize: MainAxisSize.min,
                 children: [Icon(Icons.list), SizedBox(width: 8), Text('リスト')],
               ),
             ),
             Tab(
               child: Row(
-                mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(Icons.bar_chart),
                   SizedBox(width: 8),
@@ -253,24 +264,20 @@ class MealRecordPageState extends State<MealRecordPage>
       body: Stack(
         children: [
           Container(decoration: backGroundBoxDecoration()),
-          FutureBuilder<List<Map<String, String>>>(
-            future: _mealDataListFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('エラー: ${snapshot.error}'));
-              } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                final data = snapshot.data!;
-                return TabBarView(
-                  controller: _tabController,
-                  children: [_buildListView(data), _buildGraphView(data)],
-                );
-              } else {
-                return const Center(child: Text('記録が見つかりません'));
-              }
-            },
-          ),
+          if (_pageStatus == PageStatus.userDataLoading)
+            Center(child: customLoadingIndicator("ローディング中..."))
+          else if (_pageStatus == PageStatus.error)
+            const Center(child: Text('エラーが発生しました'))
+          else if (_pageStatus == PageStatus.dataEmpty)
+            const Center(child: Text('記録が見つかりません'))
+          else
+            TabBarView(
+              controller: _tabController,
+              children: [
+                _buildListView(_mealDataList),
+                _buildGraphView(_mealDataList),
+              ],
+            ),
         ],
       ),
     );
@@ -283,3 +290,5 @@ extension MapIndexed<E> on Iterable<E> {
     return map((e) => f(e, i++));
   }
 }
+
+enum PageStatus { userDataLoading, dataLoaded, dataEmpty, error }
