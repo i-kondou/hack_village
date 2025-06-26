@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import '../services/storage_helper.dart';
 
 class MealRecordPage extends StatefulWidget {
   const MealRecordPage({super.key});
