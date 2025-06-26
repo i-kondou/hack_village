@@ -163,8 +163,10 @@ class MealRecordPageState extends State<MealRecordPage>
                       getTitlesWidget: (value, meta) {
                         final index = value.toInt();
                         if (index >= 0 && index < data.length) {
-                          //del
-                          return Text(index.toString());
+                          return Text(
+                            data[index]['eatenAt']!.substring(5, 10).toString(),
+                            style: const TextStyle(fontSize: 12),
+                          );
                         }
                         return const Text('');
                       },
