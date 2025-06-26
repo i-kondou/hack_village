@@ -1,5 +1,7 @@
 import 'package:dietitian/recources/nutrition_facts.dart';
 import 'package:dietitian/widget/common_themes.dart';
+import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../services/storage_helper.dart';
@@ -24,18 +26,24 @@ class MealRecordPageState extends State<MealRecordPage>
   }
 
   Future<List<Map<String, String>>> _loadMealDataList() async {
-    final value = await StorageHelper.loadString('meal_number', '0');
-    final mealNumber = int.parse(value ?? '0');
-    print("✅ 食事番号: $mealNumber");
+    final token = await FirebaseAuth.instance.currentUser?.getIdToken();
+    final response = await Dio().get(
+      'https://dietitian-backend--feat-919605860399.us-central1.run.app/meal/list',
+      options: Options(
+        contentType: 'application/json',
+        headers: {"Authorization": 'Bearer ${token ?? ''}'},
+      ),
+    );
     List<Map<String, String>> mealDataList = [];
-    for (var i = 1; i < mealNumber; i++) {
-      final data = await StorageHelper.loadMap("analysis_result_$i");
-      if (data != null) {
-        print("✅ 食事 $i のデータ: $data");
-        mealDataList.add(data);
-      } else {
-        print("❌ 食事 $i のデータは見つかりません");
+    for (var i = 1; i < response.data['meal_records'].length; i++) {
+      Map<String, dynamic> responseData = response.data['meal_records'][i];
+      Map<String, String> mealData = {};
+      for (var key in responseData.keys) {
+        if (key != 'imageUrl') {
+          mealData[key] = responseData[key].toString();
+        }
       }
+      mealDataList.add(mealData);
     }
     return mealDataList;
   }
