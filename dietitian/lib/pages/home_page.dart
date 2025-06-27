@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:dietitian/services/storage_helper.dart';
 import 'package:dietitian/utils/debug_print.dart';
 import 'package:dietitian/utils/is_all_data_valid.dart';
 import 'package:dietitian/widget/common_themes.dart';
@@ -70,7 +69,6 @@ class HomePageState extends State<HomePage> {
       if (shouldLogout == true) {
         await GoogleSignIn().signOut();
         await FirebaseAuth.instance.signOut();
-        StorageHelper.saveString('userdata_saved', 'false');
         if (!mounted) return;
         Navigator.pushNamedAndRemoveUntil(
           context,
@@ -130,8 +128,6 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final uid = _user?.uid;
-
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
