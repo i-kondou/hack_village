@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:dietitian/services/storage_helper.dart';
 import 'package:dietitian/utils/debug_print.dart';
 import 'package:dietitian/utils/is_all_data_valid.dart';
 import 'package:dietitian/widget/common_themes.dart';
@@ -18,9 +17,10 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  User? _user;
+  late final User? _user;
   String _dailyMessage = '';
   PageStatus _pageStatus = PageStatus.userDataLoading;
+  late final String userName;
 
   @override
   void initState() {
@@ -69,7 +69,6 @@ class HomePageState extends State<HomePage> {
       if (shouldLogout == true) {
         await GoogleSignIn().signOut();
         await FirebaseAuth.instance.signOut();
-        StorageHelper.saveString('userdata_saved', 'false');
         if (!mounted) return;
         Navigator.pushNamedAndRemoveUntil(
           context,
@@ -91,6 +90,7 @@ class HomePageState extends State<HomePage> {
       ),
     );
     if (response.data != null) {
+      userName = response.data['name'] ?? 'ゲスト';
       return response.data;
     } else {
       throw Exception('ユーザーデータの読み込みに失敗: ${response.statusCode}');
@@ -128,9 +128,6 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final displayName = _user?.displayName;
-    final uid = _user?.uid;
-
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -159,9 +156,7 @@ class HomePageState extends State<HomePage> {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            displayName != null
-                                ? 'こんにちは、$displayName さん'
-                                : 'ユーザーID: $uid',
+                            'こんにちは、$userName さん',
                             style: const TextStyle(
                               fontSize: 18,
                               color: Colors.white,

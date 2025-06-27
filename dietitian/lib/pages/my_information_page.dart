@@ -1,4 +1,3 @@
-import 'package:dietitian/services/storage_helper.dart';
 import 'package:dietitian/widget/common_themes.dart';
 import 'package:dietitian/widget/common_widgets.dart';
 import 'package:flutter/material.dart';
@@ -137,7 +136,6 @@ class MyInformationPageState extends State<MyInformationPage> {
       if (!mounted) return;
       showSnackBarMessage('保存しました。', context, mounted);
       //本体に「ユーザーデータが保存されていること」を保存する
-      StorageHelper.saveString('userdata_saved', 'true');
       if (widget.isFirstLogin) {
         Navigator.pushReplacementNamed(context, '/homePage');
       }
