@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dietitian/recources/nutrition_facts.dart';
 import 'package:dietitian/widget/common_themes.dart';
 import 'package:dietitian/widget/common_widgets.dart';
@@ -44,14 +45,12 @@ class MealRecordPageState extends State<MealRecordPage>
         final record = response.data['meal_records'][i];
         final entry = <String, String>{};
         for (var key in record.keys) {
-          if (key != 'imageUrl') {
-            entry[key] =
-                key == 'eatenAt'
-                    ? DateTime.parse(
-                      record[key],
-                    ).toLocal().toString().substring(0, 16)
-                    : record[key].toString();
-          }
+          entry[key] =
+              key == 'eatenAt'
+                  ? DateTime.parse(
+                    record[key],
+                  ).toLocal().toString().substring(0, 16)
+                  : record[key].toString();
         }
         data.add(entry);
       }
@@ -69,42 +68,56 @@ class MealRecordPageState extends State<MealRecordPage>
 
   // データをカード形式に変換するロジック
   Card _getCardOfMeal(Map<String, String> data) {
-    // データをカード形式に変換するロジック
+    final imageUrl = data['imageUrl']; // 画像URLを取り出す
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children:
-              data.entries.map((e) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Row(
-                    children: [
-                      //食事番号、カロリーなど項目名(太字)
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          nutritionFactsLabel[e.key] ?? e.key,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+          children: [
+            if (imageUrl != null && imageUrl.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
+                  //高速に表示するためのキャッシュ
+                  placeholder:
+                      (context, url) =>
+                          const Center(child: CircularProgressIndicator()),
+                ),
+              ),
+            ...data.entries
+                .where((e) => e.key != 'imageUrl') // imageUrl はリストに表示しない
+                .map(
+                  (e) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Row(
+                      children: [
+                        //食事番号、カロリーなど項目名(太字)
+                        Expanded(
+                          flex: 3,
+                          child: Text(
+                            nutritionFactsLabel[e.key] ?? e.key,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
                           ),
                         ),
-                      ),
-                      //項目の値(通常フォント)
-                      Expanded(
-                        flex: 5,
-                        child: Text(
-                          e.value + (nutritionFactsUnits[e.key] ?? ''),
-                          style: const TextStyle(fontSize: 16),
+                        //項目の値(通常フォント)
+                        Expanded(
+                          flex: 5,
+                          child: Text(
+                            e.value + (nutritionFactsUnits[e.key] ?? ''),
+                            style: const TextStyle(fontSize: 16),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                );
-              }).toList(),
+                ),
+          ],
         ),
       ),
     );
