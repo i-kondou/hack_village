@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dietitian/recources/nutrition_facts.dart';
 import 'package:dietitian/widget/common_themes.dart';
 import 'package:dietitian/widget/common_widgets.dart';
@@ -78,8 +79,8 @@ class MealRecordPageState extends State<MealRecordPage>
             if (imageUrl != null && imageUrl.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
-                child: Image.network(
-                  imageUrl,
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
                   height: 150,
                   width: double.infinity,
                   fit: BoxFit.cover,
