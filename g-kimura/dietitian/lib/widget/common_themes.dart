@@ -8,7 +8,7 @@ ThemeData customThemeData() {
 
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.teal.shade600,
-      foregroundColor: Colors.white,
+      foregroundColor: Colors.white.withValues(alpha: 0.9),
       centerTitle: true,
     ),
 
