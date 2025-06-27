@@ -81,9 +81,10 @@ class MealRecordPageState extends State<MealRecordPage>
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: CachedNetworkImage(
                   imageUrl: imageUrl,
-                  height: 150,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
+                  //高速に表示するためのキャッシュ
+                  placeholder:
+                      (context, url) =>
+                          const Center(child: CircularProgressIndicator()),
                 ),
               ),
             ...data.entries
