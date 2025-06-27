@@ -282,7 +282,7 @@ class UploadImagePageState extends State<UploadImagePage> {
           padding: const EdgeInsets.only(right: 40.0),
           child:
               (_analysisResult != null && _analysisResult!.containsKey(key))
-                  ? Text("${_analysisResult![key]}$value")
+                  ? Text("${_analysisResult![key].toStringAsFixed(2)}$value")
                   : Text("データがありません"),
         ),
       ],
