@@ -1,4 +1,4 @@
-package com.example.dietitian
+package com.aiagenthackathon2.dietitian
 
 import io.flutter.embedding.android.FlutterActivity
 

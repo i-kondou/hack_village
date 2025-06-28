@@ -144,7 +144,15 @@ class MealRecordPageState extends State<MealRecordPage>
     // 表示対象とするキーを定義（ここでは数値データのみと仮定し、最初のデータから取得）
     final keys =
         data.first.keys
-            .where((k) => !['advice_message', 'menu', 'eatenAt'].contains(k))
+            .where(
+              (k) =>
+                  ![
+                    'advice_message',
+                    'eatenAt',
+                    'imageUrl',
+                    'menu',
+                  ].contains(k),
+            )
             .toList();
 
     // 栄養素ごとのスポットをMapに保存
