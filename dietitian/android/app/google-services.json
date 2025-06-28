@@ -7,12 +7,80 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:435782441404:android:7f4066892c9409c6fe73b9",
+        "android_client_info": {
+          "package_name": "com.aiagenthackathon2.dietitian"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "435782441404-3rvtb4nouo1ipobsp027lken8n3nr3fl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aiagenthackathon2.dietitian",
+            "certificate_hash": "c059a4752858690fd3bd8d6ec957ff456ba1ee06"
+          }
+        },
+        {
+          "client_id": "435782441404-hambqecceu0ldg218pg1evns6qeinknf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aiagenthackathon2.dietitian",
+            "certificate_hash": "99b139ed14af63e4012538646d25e7250c1e1107"
+          }
+        },
+        {
+          "client_id": "435782441404-ec3kuqhendvhu8np4db3jmin9ms01m10.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAL5LFX_EhgjCoTN_wMpGjRNU_9w_1I24"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "435782441404-ec3kuqhendvhu8np4db3jmin9ms01m10.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "435782441404-crleuv8flv5ni9nvmjjrs95boju3vbui.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.dietitian"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:435782441404:android:fc37b432c055c113fe73b9",
         "android_client_info": {
           "package_name": "com.example.dietitian"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "435782441404-64ho1lnpc33nej2hovd1699j8c7stjg8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dietitian",
+            "certificate_hash": "99b139ed14af63e4012538646d25e7250c1e1107"
+          }
+        },
+        {
+          "client_id": "435782441404-nkee4q4oev69pimamvo6phgapfn6cao4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dietitian",
+            "certificate_hash": "c059a4752858690fd3bd8d6ec957ff456ba1ee06"
+          }
+        },
         {
           "client_id": "435782441404-ec3kuqhendvhu8np4db3jmin9ms01m10.apps.googleusercontent.com",
           "client_type": 3

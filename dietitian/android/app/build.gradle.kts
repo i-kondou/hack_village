@@ -18,7 +18,7 @@ val keystoreProperties = Properties().apply {
 }
 
 android {
-    namespace = "com.example.dietitian"
+    namespace = "com.aiagenthackathon2.dietitian"
     compileSdk = flutter.compileSdkVersion
     // 自分で変更
     ndkVersion = "27.0.12077973"
@@ -34,7 +34,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.dietitian"
+        applicationId = "com.aiagenthackathon2.dietitian"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 23
