@@ -151,6 +151,7 @@ class MealRecordPageState extends State<MealRecordPage>
                     'eatenAt',
                     'imageUrl',
                     'menu',
+                    "menu_name",
                   ].contains(k),
             )
             .toList();

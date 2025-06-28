@@ -53,7 +53,27 @@ flutterfire configure
 
 4. lib/firebase_options.dart を自動生成するか、既存ファイルを配置
 
-5. 実機またはエミュレーターで起動
+5. SHA-1を取得し、設定する(googleアカウントのOAuth用)
+
+android/key.propertiesを作成する
+```properties
+storePassword=your_store_password
+keyPassword=your_key_password
+keyAlias=your_key_alias
+storeFile=your_keystore_file.jks
+```
+
+6. SHA-1を取得する
+
+```bash
+keytool -list -v -keystore your_keystore_file.jks -alias your_key_alias -storepass your_store_password
+```
+
+7. Firebase ConsoleでAndroidアプリのSHA-1を設定
+
+8. google-services.jsonを `android/app/` ディレクトリに配置または上書き
+
+9. 実機またはエミュレーターで起動
 ```bash
 flutter run
 ```
