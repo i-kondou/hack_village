@@ -82,7 +82,7 @@ flutter run
 ```bash
 lib/
 ├── pages/              # 各画面（ホーム、記録、情報など）
-├── resources/         # 画像、フォント、ローカライズファイル
+├── resources/          # 画像、フォント、ローカライズファイル
 ├── services/           # API呼び出し、Firebase連携など
 ├── utils/              # ユーティリティ関数
 ├── widget/             # 共通ウィジェット
